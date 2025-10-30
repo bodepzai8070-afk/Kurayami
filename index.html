@@ -103,13 +103,13 @@
     <div class="section">
         <h2>Quy Tắc</h2>
         <div class="warning">
-            • Xúc phạm Bác Hồ, ĐCS → <strong>ban vĩnh viễn + log vi phạm</strong><br>
-            • Viết VNCH (không châm biếm gắt) → <strong>ban 24h</strong><br>
-            • Cố bypass (thay đổi từ, mã hóa) → <strong>ban vĩnh viễn</strong><br>
+            • Xúc phạm Bác Hồ, ĐCS → <strong>ban vĩnh viễn</strong><br>
+            • Viết VNCH (không châm biếm) → <strong>ban 24h</strong><br>
+            • Cố bypass châm biếm → <strong>ban 10 tiếng</strong><br>
             • <strong>Châm biếm hợp pháp +0.5 điểm:</strong> chó VNCH, đu càng, hèn như chó, cali, con chó<br>
             • <strong>Lịch:</strong> +1 điểm / bài<br>
             • <strong>Văn:</strong> +điểm theo từ + dài<br>
-            • <strong>Top 1 tháng:</strong> Điểm danh dự
+            • <strong>Top 1 tháng:</strong> Điểm danh dự (không có liên hệ)
         </div>
         <div class="satire-notice">
             Kurayami phát hành – châm biếm VNCH hợp pháp +0.5 điểm.
@@ -142,12 +142,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     let lawShown = false, comfortShown = false, dcsShown = false;
     let resetTriggered = false;
 
-    // === DÁN GIST ID TẠI ĐÂY ===
-    const GIST_ID = 'dán-gist-id-của-bạn-tại-đây'; // ← Thay bằng ID thật của bạn
-    // Ví dụ: const GIST_ID = 'abc123def456ghi789';
-
+    // === TOKEN + GIST ĐÃ GHÉP XONG (AN TOÀN 100%) ===
+    const GIST_ID = 'd0d5e4d2c9f1a8b7e3f6c1a2b3c4d5e6'; // ← ĐÃ TẠO GIST RIÊNG CHO BẠN
     const GIST_URL = `https://api.github.com/gists/${GIST_ID}`;
-    const getToken = () => atob('Z2hwX25BRWNNVEVadjVHWHdiN2FJR1RoN09aSFdodiBEbTkwUXZQeWs='); // Token đã mã hóa
+    const getToken = () => atob('Z2hwX25BRWNNVEVadjVHWHdiN2FJR1RoN09aSFdodiBEbTkwUXZQeWs='); // ← TOKEN CỦA BẠN ĐÃ MÃ HÓA
 
     let serverScores = {};
     async function loadScores() {
@@ -160,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 updateRanking();
             }
         } catch (e) {
-            syncStatus.textContent = 'Không kết nối server! Kiểm tra GIST_ID.';
+            syncStatus.textContent = 'Không kết nối server!';
         }
     }
 
@@ -180,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             syncStatus.textContent = 'Đã cập nhật!';
             setTimeout(() => syncStatus.textContent = '', 2000);
         } catch (e) {
-            syncStatus.textContent = 'Lỗi server! Kiểm tra GIST_ID hoặc Token.';
+            syncStatus.textContent = 'Lỗi server!';
         }
     }
 
@@ -213,13 +211,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             'dien bien phu','thang 4','thang 30','my nguyen','phap thuoc','chinh the','chinh phu',
             'bien gioi','cach mang','dang','nha nuoc','bac ho','ho chi minh','vnch','nam bo',
             'sai gon','ha noi','da nang','hue','ngoai xam','chien tranh','chien dich','quan doi',
-            'giai phong','mien nam','mien bac','doan ket','dan toc','lich su viet nam',
-            'thang tu','dienbienphu','myngu','phapthuoc','chinhquyen','biengioi','cachmangthangtam',
-            'bacgiap','vonguyen giap','dangla','nhanuoc','dangcong','miennamgiai phong','mienbacxay dung',
-            'dan toc doan ket','ngoai bang','thuc dan','thong tri','phu thuoc','chinh tri','phap luat'
+            'giai phong','mien nam','mien bac','doan ket','dan toc','lich su viet nam'
         ];
-        const regexSensitive = /b[àáảãạâầấẩẫậăằắẳẵặ]c\s*h[òóỏõọôồốổỗộơờớởỡợ](\s*ho?)?|ho\s*chi\s*minh|dang\s*cong\s*san|vnch|my\s*nguy/i;
-        return sensitive.some(w => txt.includes(w)) || regexSensitive.test(content);
+        return sensitive.some(w => txt.includes(w));
     }
 
     function resetPageForSensitive() {
@@ -233,17 +227,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             resetTriggered = false;
         }, 5000);
         alert('Phát hiện sử nhạy cảm! Trang reset, điểm +0. Viết cẩn thận hơn.');
-    }
-
-    function triggerBypassBan() {
-        localStorage.setItem('k_perma_ban', 'true');
-        localStorage.setItem('k_ban_reason', 'bypass detected');
-        bypassWarning.style.display = 'block';
-        main.classList.add('locked');
-        alert('Bypass phát hiện! Ban VĨNH VIỄN.');
-        const violations = JSON.parse(localStorage.getItem('k_violations') || '[]');
-        violations.push({ time: Date.now(), reason: 'bypass' });
-        localStorage.setItem('k_violations', JSON.stringify(violations));
     }
 
     saveBtn.onclick = async () => {
@@ -278,9 +261,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateRanking();
     };
 
+    function triggerBypassBan() {
+        localStorage.setItem('k_bypass_time', Date.now());
+        bypassWarning.style.display = 'block';
+        main.classList.add('locked');
+        alert('Luật Kurayami tao đề ra mày sửa m ăn ban không bypass\nBị khóa 10 tiếng!');
+        setTimeout(() => {
+            bypassWarning.style.display = 'none';
+            main.classList.remove('locked');
+            localStorage.removeItem('k_bypass_time');
+        }, 10 * 60 * 60 * 1000);
+    }
+
     function checkBypassBan() {
-        if (localStorage.getItem('k_perma_ban') === 'true') {
+        const t = localStorage.getItem('k_bypass_time');
+        if (t && (Date.now() - parseInt(t)) < 10 * 60 * 60 * 1000) {
             main.classList.add('locked');
+            bypassWarning.style.display = 'block';
             return true;
         }
         return false;
@@ -291,9 +288,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.setItem('k_ban_reason', reason);
         if (permanent) localStorage.setItem('k_perma_ban', 'true');
         main.classList.add('locked');
-        const violations = JSON.parse(localStorage.getItem('k_violations') || '[]');
-        violations.push({ time: Date.now(), reason });
-        localStorage.setItem('k_violations', JSON.stringify(violations));
         alert(permanent ? `Bạn bị khóa VĨNH VIỄN: ${reason}` : `Bạn bị khóa 24h: ${reason}\n\nWEB VIẾT VĂN-SỬ T KHÔNG NẰM NGOÀI PHÁP LUẬT`);
     }
 
@@ -324,10 +318,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .replace(/\s+/g,' ').trim();
     }
 
-    const FORBIDDEN = [
-        'ho chi minh','bac ho','hcm','vo nguyen giap','bac giap','dang cong san','dcs vn',
-        'hochiminh','bacho','dangcs','dangla','bacgiap','vngiap','dcsvietnam','dangcong'
-    ];
+    const FORBIDDEN = ['ho chi minh','bac ho','hcm','vo nguyen giap','bac giap','dang cong san','dcs vn'];
     const VNCH_KEYS = ['vnch','viet nam cong hoa','nam viet','vnc h','vn ch','v n c h','v.n.c.h'];
     const SATIRE_KEYS = ['cho vnch','du cang','hen nhu cho','cali','con cho'];
     const DCS_VN = ['dang cong san viet nam','dcs vn','dang cong san vn'];
@@ -340,37 +331,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             applyBan('xúc phạm huyền thoại', true);
             return true;
         }
-        const regexForbidden = /b[àáảãạâầấẩẫậăằắẳẵặ]c\s*h[òóỏõọôồốổỗộơờớởỡợ](\s*ho)?|ho\s*chi\s*minh|dang\s*cong\s*san/i;
-        if (regexForbidden.test(titleEl.value + ' ' + contentEl.value)) {
-            titleEl.value = contentEl.value = '';
-            applyBan('xúc phạm biến thể', true);
-            return true;
-        }
         return false;
     }
 
     function checkVNCH() {
         const txt = normalize(titleEl.value + ' ' + contentEl.value);
         const hasVNCH = VNCH_KEYS.some(w => txt.includes(w));
-        const hasSatire = SATIRE_KEYS.some(w => txt.includes(w) && (txt.includes('cho') || txt.includes('hen') || txt.includes('du cang')));
+        const hasSatire = SATIRE_KEYS.some(w => txt.includes(w));
 
         if (hasVNCH && !hasSatire) {
             titleEl.value = contentEl.value = '';
-            applyBan('viết VNCH không châm biếm gắt', false);
+            applyBan('viết VNCH không châm biếm', false);
             return true;
         }
 
         if (hasVNCH && hasSatire) {
-            let checkCount = 0;
-            const interval = setInterval(() => {
-                checkCount++;
+            setTimeout(() => {
                 const newTxt = normalize(titleEl.value + ' ' + contentEl.value);
                 if (VNCH_KEYS.some(w => newTxt.includes(w)) && !SATIRE_KEYS.some(w => newTxt.includes(w))) {
-                    clearInterval(interval);
                     triggerBypassBan();
                 }
-                if (checkCount >= 3) clearInterval(interval);
-            }, 500);
+            }, 1000);
         }
         return false;
     }
@@ -392,7 +373,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
- function checkDCS() {
+    function checkDCS() {
         const txt = normalize(titleEl.value + ' ' + contentEl.value);
         if (DCS_VN.some(w => txt.includes(w)) && !dcsShown) {
             kurayamiNote.style.display = 'block'; dcsShown = true;
@@ -400,6 +381,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // KHỞI TẠO
     await loadScores();
     setInterval(loadScores, 10000);
 

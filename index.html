@@ -3,31 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kurayami – Viết văn sử</title>
+  <title>Thơ & Điểm – AI Bảo Vệ</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --kurayami-purple: #6a1b9a;
-      --kurayami-pink: #ec407a;
-      --kurayami-light: #f3e5f5;
-      --kurayami-dark: #4a148c;
-      --shadow: 0 4px 10px rgba(106, 27, 154, 0.2);
+      --bg: #f8f9fa;
+      --text: #212529;
+      --border: #dee2e6;
+      --accent: #495057;
+      --shadow: 0 4px 10px rgba(0,0,0,0.1);
+      --danger: #dc3545;
+      --warning: #ffc107;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #ede7f6, #f3e5f5);
-      color: #333;
+      background: var(--bg);
+      color: var(--text);
       font-size: 16px;
       line-height: 1.5;
       overflow-x: hidden;
     }
     header {
-      background: linear-gradient(to right, var(--kurayami-purple), var(--kurayami-pink));
+      background: #212529;
       color: white;
       padding: 15px;
       text-align: center;
@@ -35,42 +33,36 @@
       font-size: 1.8em;
       box-shadow: var(--shadow);
     }
-    main {
-      max-width: 100%;
-      padding: 15px;
-    }
+    main { max-width: 100%; padding: 15px; }
     h2 {
-      color: var(--kurayami-purple);
+      color: var(--accent);
       font-family: 'Dancing Script', cursive;
       font-size: 1.5em;
       text-align: center;
       margin: 10px 0;
     }
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
-      border: 2px solid #e1bee7;
-      border-radius: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       font-size: 1em;
-      background: #fafafa;
+      background: white;
       transition: all 0.3s;
     }
-    input:focus, textarea:focus {
-      border-color: var(--kurayami-pink);
+    input:focus, textarea:focus, select:focus {
+      border-color: #495057;
       outline: none;
-      box-shadow: 0 0 0 3px rgba(236, 64, 122, 0.2);
+      box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.2);
     }
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
+    textarea { min-height: 120px; resize: vertical; }
     button {
-      background: linear-gradient(to right, var(--kurayami-purple), var(--kurayami-pink));
+      background: #212529;
       color: white;
       border: none;
       padding: 10px 15px;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 0.9em;
       font-weight: bold;
@@ -78,37 +70,23 @@
       box-shadow: var(--shadow);
       transition: all 0.3s;
     }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(106, 27, 154, 0.4);
-    }
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-    }
+    button:hover { background: #343a40; transform: translateY(-2px); }
+    button:disabled { background: #6c757d; cursor: not-allowed; transform: none; }
     .post {
-      background: var(--kurayami-light);
+      background: white;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 8px;
       margin-bottom: 10px;
-      border-left: 4px solid var(--kurayami-pink);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
       transition: transform 0.2s;
     }
-    .post:hover {
-      transform: translateX(3px);
-    }
-    .post h3 {
-      margin: 0 0 8px;
-      color: var(--kurayami-dark);
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.2em;
-    }
-    .btn-group {
-      display: flex;
-      gap: 5px;
-    }
-    #kurayamiChat {
+    .post:hover { transform: translateY(-2px); }
+    .post h3 { margin: 0 0 6px; color: var(--accent); font-family: 'Dancing Script', cursive; font-size: 1.2em; }
+    .post-meta { font-size: 0.8em; color: #6c757d; margin: 4px 0; }
+    .score { font-weight: bold; color: #28a745; font-size: 1.1em; }
+    .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
+    #chatBubble {
       position: fixed;
       bottom: 15px;
       right: 15px;
@@ -117,7 +95,7 @@
       border-radius: 20px;
       box-shadow: var(--shadow);
       font-size: 0.9em;
-      color: var(--kurayami-purple);
+      color: var(--accent);
       font-weight: bold;
       max-width: 80%;
       text-align: center;
@@ -125,16 +103,14 @@
       align-items: center;
       gap: 5px;
       z-index: 100;
+      border: 1px solid var(--border);
       animation: pulse 2s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-    }
-    #banNotice {
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+    #lockScreen {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(74, 20, 140, 0.98);
+      background: rgba(220,53,69,0.98);
       color: white;
       display: flex;
       flex-direction: column;
@@ -142,509 +118,420 @@
       align-items: center;
       text-align: center;
       z-index: 9999;
-      padding: 15px;
+      padding: 20px;
       display: none;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
     }
-    #banNotice.show {
-      display: flex;
-      animation: fadeIn 0.5s;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    #countdown {
-      font-size: 2em;
-      margin: 15px 0;
-      color: #ff5252;
+    #lockScreen.show { display: flex; animation: fadeIn 0.5s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    #lockCountdown {
+      font-size: 3em;
+      margin: 20px 0;
       font-weight: bold;
+      text-shadow: 0 0 15px rgba(255,255,255,0.5);
     }
-    #deviceId {
-      font-size: 0.7em;
-      color: #e0e0e0;
+    .penguin {
+      font-size: 3em;
+      margin-bottom: 10px;
+      animation: wobble 1s infinite;
+    }
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0); }
+      25% { transform: rotate(10deg); }
+      75% { transform: rotate(-10deg); }
     }
     #reloadNotice {
-      background: linear-gradient(to right, #ff5252, #f50057);
+      background: #212529;
       color: white;
       padding: 10px;
       text-align: center;
       font-weight: bold;
       margin-bottom: 10px;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 0.9em;
       box-shadow: var(--shadow);
-      animation: warning 2s infinite;
     }
-    @keyframes warning {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-    .love-mode {
-      border: 2px solid #ff4081 !important;
-      box-shadow: 0 0 10px rgba(255,64,129,0.4) !important;
-      animation: lovePulse 1.5s infinite;
-    }
-    @keyframes lovePulse {
-      0% { box-shadow: 0 0 10px rgba(255,64,129,0.4); }
-      50% { box-shadow: 0 0 15px rgba(255,64,129,0.6); }
-      100% { box-shadow: 0 0 10px rgba(255,64,129,0.4); }
-    }
-    .kurayami-heart {
-      color: #ff4081;
-      font-size: 1.1em;
-      animation: heartbeat 1.5s infinite;
-    }
-    @keyframes heartbeat {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-    }
-    .warning-banner {
-      background: #fff3cd;
-      color: #856404;
+    .warning-banner, .success-banner, .permanent-ban, .law-notice {
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 8px;
       margin: 10px 0;
       font-weight: bold;
       text-align: center;
-      border: 1px solid #ffc107;
       font-size: 0.9em;
+      border: 1px solid;
     }
-    .permanent-ban {
-      background: #f8d7da;
-      color: #721c24;
-      padding: 10px;
-      border-radius: 10px;
+    .warning-banner { background: #fff3cd; color: #856404; border-color: #ffc107; }
+    .success-banner { background: #d4edda; color: #155724; border-color: #28a745; }
+    .permanent-ban { background: #f8d7da; color: #721c24; border-color: #dc3545; }
+    .law-notice { background: #d1ecf1; color: #0c5460; border-color: #17a2b8; }
+    .share-section {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
       margin: 10px 0;
-      font-weight: bold;
-      text-align: center;
-      border: 1px solid #dc3545;
-      font-size: 0.9em;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
     }
-    .law-notice {
-      background: #d1ecf1;
-      color: #0c5460;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 10px 0;
-      font-weight: bold;
-      text-align: center;
-      border: 1px solid #17a2b8;
-      font-size: 0.9em;
-    }
-    .success-banner {
-      background: #d4edda;
-      color: #155724;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 10px 0;
-      font-weight: bold;
-      text-align: center;
-      border: 1px solid #28a745;
-      font-size: 0.9em;
-    }
-    .fb-link {
-      color: #1877f2;
-      text-decoration: underline;
-      font-weight: bold;
+    .share-link {
+      background: #f1f3f5;
+      padding: 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.85em;
       word-break: break-all;
+      margin: 8px 0;
     }
+    .copy-btn {
+      background: #28a745;
+      font-size: 0.8em;
+      padding: 6px 10px;
+    }
+    .delete-date { font-size: 0.85em; color: #6c757d; }
     @media (max-width: 600px) {
-      header {
-        font-size: 1.5em;
-        padding: 12px;
-      }
-      main {
-        padding: 10px;
-      }
-      h2 {
-        font-size: 1.3em;
-      }
-      input, textarea {
-        padding: 8px;
-        font-size: 0.9em;
-      }
-      textarea {
-        min-height: 100px;
-      }
-      button {
-        padding: 8px 12px;
-        font-size: 0.85em;
-      }
-      .post {
-        padding: 10px;
-      }
-      .post h3 {
-        font-size: 1.1em;
-      }
-      #kurayamiChat {
-        padding: 8px 12px;
-        font-size: 0.85em;
-        max-width: 70%;
-      }
-      #banNotice {
-        font-size: 1.2em;
-        padding: 10px;
-      }
-      #countdown {
-        font-size: 1.8em;
-      }
-      #deviceId {
-        font-size: 0.65em;
-      }
-      .warning-banner, .permanent-ban, .law-notice, .success-banner {
-        font-size: 0.85em;
-        padding: 8px;
-      }
+      header { font-size: 1.5em; padding: 12px; }
+      main { padding: 10px; }
+      h2 { font-size: 1.3em; }
+      input, textarea, select { padding: 8px; font-size: 0.9em; }
+      textarea { min-height: 100px; }
+      button { padding: 8px 12px; font-size: 0.85em; }
+      .post { padding: 10px; }
+      .post h3 { font-size: 1.1em; }
+      #chatBubble { padding: 8px 12px; font-size: 0.85em; max-width: 70%; }
+      #lockScreen { font-size: 1.2em; padding: 15px; }
+      #lockCountdown { font-size: 2.2em; }
     }
   </style>
 </head>
 <body>
-  <header>Kurayami – Viết Cảm Xúc</header>
+  <header>Thơ & Điểm – AI Bảo Vệ</header>
   
-  <div id="reloadNotice">Web Kurayami – Tôi không nằm ngoài pháp luật.</div>
+  <div id="reloadNotice">AI quét 24/7 – Không fake tên, không bypass</div>
 
   <main>
     <div id="status"></div>
 
-    <h2>Viết Gì Đó, Kurayami Đang Nghe</h2>
-    <input id="title" type="text" placeholder="Tiêu đề..." oninput="kurayamiSpeak()" />
-    <textarea id="content" placeholder="Viết cảm xúc... Kurayami đang nghe" oninput="kurayamiSpeak()"></textarea>
-    <div style="display:flex; gap:5px;">
-      <button id="saveBtn" onclick="savePost()">Gửi</button>
+    <h2>Viết Thơ</h2>
+    <input id="author" type="text" placeholder="Tên bạn (thật hoặc giả)..." oninput="checkAuthor()" />
+    <input id="title" type="text" placeholder="Tiêu đề thơ..." oninput="aiSpeak()" />
+    <textarea id="content" placeholder="Viết thơ..." oninput="aiSpeak()"></textarea>
+    
+    <select id="sendMode">
+      <option value="private">Chỉ mình tôi</option>
+      <option value="public">Gửi công khai (có điểm)</option>
+    </select>
+
+    <div id="deleteDateSection" style="margin:8px 0;">
+      <label class="delete-date">
+        <input type="checkbox" id="autoDelete" />
+        Tự động xóa sau ngày:
+      </label>
+      <input type="date" id="deleteDate" disabled style="margin-top:4px;" />
+    </div>
+
+    <div id="shareSection" class="share-section" style="display:none;">
+      <p><strong>Link chia sẻ:</strong></p>
+      <div id="shareLink" class="share-link">Đang tạo...</div>
+      <button class="copy-btn" onclick="copyLink()">Copy</button>
+    </div>
+
+    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+      <button id="saveBtn" onclick="savePost()">Gửi / Lưu</button>
       <button onclick="clearAll()">Xóa Hết</button>
     </div>
 
-    <hr style="border: 1px dashed #e1bee7; margin: 20px 0;">
+    <hr style="border: 1px dashed #dee2e6; margin: 20px 0;">
 
-    <h2>Kho Cảm Xúc</h2>
+    <h2>Kho Thơ (Sắp xếp theo điểm)</h2>
     <div id="posts"></div>
   </main>
 
-  <div id="kurayamiChat">
-    <span class="kurayami-heart">♥</span>
-    <span id="chatText">đang nghe...</span>
+  <div id="chatBubble">
+    <span style="color:#dc3545;">AI</span>
+    <span id="chatText">đang theo dõi...</span>
   </div>
 
-  <div id="banNotice">
-    <p style="font-size:2em; font-family:'Dancing Script',cursive; margin:0;">Kurayami Buồn</p>
-    <p id="banReason" style="margin:15px 0; font-size:1em;"></p>
-    <div id="countdown"></div>
-    <p id="deviceId"></p>
-    <p style="font-size:0.8em; margin-top:15px; line-height:1.5;">
-      Cố ý hay cố tình, cấm 24h.<br>
-      Không bypass, không fake VPN, không reload.<br>
-      <span style="color:#ffeb3b;">Internet không ngoài pháp luật.</span>
+  <!-- MÀN HÌNH KHÓA 10 PHÚT -->
+  <div id="lockScreen">
+    <div class="penguin">Penguin</div>
+    <p style="font-size:1.8em; font-weight:bold; margin:15px 0;">BẠN GIẢ MẠO TÊN!</p>
+    <p style="font-size:1.2em; margin:10px 0;">
+      <strong>AI phát hiện:</strong> Dùng tên cấm <span id="fakeName"></span><br>
+      <span style="color:#ffeb3b; font-weight:bold;">Khóa màn hình 10 phút!</span>
+    </p>
+    <div id="lockCountdown">10:00</div>
+    <p style="font-size:0.9em; line-height:1.6; margin-top:20px;">
+      Không reload, không fake, không bypass.<br>
+      <span style="color:#fff;">AI biết hết Penguin</span>
     </p>
   </div>
 
   <script>
     const postsDiv = document.getElementById('posts');
-    const banNotice = document.getElementById('banNotice');
-    const banReasonEl = document.getElementById('banReason');
-    const countdownEl = document.getElementById('countdown');
-    const deviceIdEl = document.getElementById('deviceId');
+    const lockScreen = document.getElementById('lockScreen');
+    const lockCountdown = document.getElementById('lockCountdown');
+    const fakeNameEl = document.getElementById('fakeName');
     const saveBtn = document.getElementById('saveBtn');
     const statusDiv = document.getElementById('status');
-    const kurayamiChat = document.getElementById('kurayamiChat');
     const chatText = document.getElementById('chatText');
+    const authorInput = document.getElementById('author');
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
+    const sendMode = document.getElementById('sendMode');
+    const autoDelete = document.getElementById('autoDelete');
+    const deleteDate = document.getElementById('deleteDate');
+    const shareSection = document.getElementById('shareSection');
+    const shareLink = document.getElementById('shareLink');
 
-    // LOẠI BỎ DẤU TIẾNG VIỆT
-    function removeDiacritics(str) {
-      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
-    }
-
-    // TẠO DEVICE ID
-    let deviceId = localStorage.getItem('kurayami_device_id');
-    if (!deviceId) {
+    // === FINGERPRINT SIÊU BẢO MẬT ===
+    async function generateDeviceId() {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       ctx.textBaseline = 'top';
       ctx.font = '14px Arial';
-      ctx.fillText('Kurayami Law ID', 2, 2);
+      ctx.fillText('AI Shield 2025', 2, 2);
       const data = canvas.toDataURL();
-      deviceId = btoa(data + navigator.userAgent + screen.width + screen.height + navigator.language + Date.now()).substring(0, 32);
-      localStorage.setItem('kurayami_device_id', deviceId);
-    }
-    deviceIdEl.textContent = `Máy: ${deviceId}`;
-
-    // TỪ KHÓA CẤM
-    const bannedKeywords = {
-      vnch: ['vnch', 'viet nam cong hoa', 'nguy quyen', 'nguy quan'],
-      dcsvn: ['dcs vn', 'dang cong san viet nam', 'dang csvn'],
-      ho: ['bac ho', 'ho chi minh', 'bac h'],
-      giap: ['bac giap', 'vo nguyen giap'],
-      liet_si: /liet\s*si|anh\s*hung.*(chui|xuc pham|do|ke)/i
-    };
-
-    const offensiveWords = {
-      vnch: ['nguy', 'phan dong', 'ban nuoc', 'tay sai'],
-      ho: ['ke', 'do', 'gia', 'doi', 'phan', 'toi do'],
-      giap: ['phan', 'boi', 'toi do', 'ke']
-    };
-
-    // TỪ KHÓA TÌNH YÊU
-    const loveKeywords = ['yeu', 'thuong', 'nho', 'dau', 'tan vo', 'chia tay', 'co don', 'tinh yeu', 'buon', 'khoc'];
-
-    // LƯU CẤM
-    const banKey = `kurayami_ban_${deviceId}`;
-    let banData = JSON.parse(localStorage.getItem(banKey) || 'null');
-
-    // KIỂM TRA CẤM
-    function checkBan() {
-      if (!banData) return;
-      const now = Date.now();
-      if (banData.permanent) {
-        showPermanentBan();
-      } else if (banData.until > now) {
-        startCountdown(banData.until, banData.reason);
-      } else {
-        localStorage.removeItem(banKey);
-        banData = null;
-      }
+      const text = data + navigator.userAgent + screen.width + screen.height + 
+                   navigator.hardwareConcurrency + navigator.deviceMemory + 
+                   new Date().getTimezoneOffset() + Math.random();
+      const encoder = new TextEncoder();
+      const buffer = encoder.encode(text);
+      const hash = await crypto.subtle.digest('SHA-256', buffer);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('').substring(0,32);
     }
 
-    function showPermanentBan() {
-      banReasonEl.innerHTML = `
-        <div class="permanent-ban">
-          <p style="margin:0;">CẤM VĨNH VIỄN</p>
-          <p>Xúc phạm nghiêm trọng.</p>
-        </div>
-        <div class="law-notice">
-          Web Kurayami – Tôi không nằm ngoài pháp luật.<br>
-          Không bypass, không fake VPN, không reload.
-        </div>
-        <p style="margin-top:10px; font-size:0.8em;">
-          Muốn mở ban? Liên hệ Habato:<br>
-          <a href="https://www.facebook.com/share/1LU63c2hE6/" target="_blank" class="fb-link">facebook.com/share/1LU63c2hE6/</a>
-        </p>
-      `;
-      banNotice.classList.add('show');
-      disableAllInputs();
+    let deviceId = localStorage.getItem('ai_device_id');
+    if (!deviceId) {
+      generateDeviceId().then(id => {
+        deviceId = id;
+        localStorage.setItem('ai_device_id', deviceId);
+      });
     }
 
-    function startCountdown(until, reason) {
-      banReasonEl.innerHTML = `
-        <div class="warning-banner">
-          <p style="margin:0;">CẤM 24 GIỜ</p>
-          <p>Cố ý hay cố tình, cấm 24h.</p>
-          <p>Không bypass, không fake VPN, không reload.</p>
-        </div>
-      `;
-      banNotice.classList.add('show');
-      disableAllInputs();
+    // === TÊN CẤM ===
+    const bannedNames = ['kurayami', 'kirada', 'admin', 'ai', 'habato', 'owner', 'mod'];
 
+    // === KHÓA MÀN HÌNH 10 PHÚT ===
+    function lockScreenFor10Min(fakeName) {
+      fakeNameEl.textContent = fakeName;
+      lockScreen.classList.add('show');
+      document.querySelectorAll('button, input, textarea, select').forEach(el => el.disabled = true);
+
+      let seconds = 600;
       const interval = setInterval(() => {
-        const remaining = Math.max(0, Math.floor((until - Date.now()) / 1000));
-        if (remaining === 0) {
+        seconds--;
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        lockCountdown.textContent = `${m}:${s}`;
+        if (seconds <= 0) {
           clearInterval(interval);
-          banNotice.classList.remove('show');
-          localStorage.removeItem(banKey);
-          banData = null;
+          lockScreen.classList.remove('show');
+          document.querySelectorAll('button, input, textarea, select').forEach(el => el.disabled = false);
+          localStorage.removeItem('ai_lock');
           location.reload();
-          return;
         }
-        const h = String(Math.floor(remaining / 3600)).padStart(2, '0');
-        const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
-        const s = String(remaining % 60).padStart(2, '0');
-        countdownEl.textContent = `${h}:${m}:${s}`;
       }, 1000);
+
+      localStorage.setItem('ai_lock', JSON.stringify({ until: Date.now() + 600000, name: fakeName }));
     }
 
-    function disableAllInputs() {
-      saveBtn.disabled = true;
-      document.querySelectorAll('button, input, textarea').forEach(el => el.disabled = true);
+    // === KIỂM TRA KHÓA KHI LOAD ===
+    const lockData = JSON.parse(localStorage.getItem('ai_lock') || 'null');
+    if (lockData && lockData.until > Date.now()) {
+      lockScreenFor10Min(lockData.name);
     }
 
-    // PHÂN TÍCH NỘI DUNG
-    function analyzePost(title, content) {
-      const originalText = `${title} ${content}`.toLowerCase();
-      const cleanText = removeDiacritics(originalText);
+    // === KIỂM TRA TÊN ===
+    function checkAuthor() {
+      const name = authorInput.value.trim().toLowerCase();
+      if (bannedNames.some(banned => name.includes(banned))) {
+        lockScreenFor10Min(authorInput.value.trim());
+        authorInput.value = '';
+        return false;
+      }
+      return true;
+    }
 
-      let isVNCHMention = false;
-      let isOffensive = false;
-      const errors = [];
+    // === CHẤM ĐIỂM ===
+    function scorePoem(title, content, author) {
+      let score = 0;
+      const text = `${author} ${title} ${content}`.toLowerCase();
+      const lines = content.split('\n').filter(l => l.trim());
+      if (lines.length >= 4) score += 25;
+      if (lines.length >= 8) score += 15;
+      const goodWords = ['yêu','thương','nhớ','đau','trăng','mưa','gió','mây','hồn','tim','lòng','nước mắt','nụ cười'];
+      const count = goodWords.filter(w => text.includes(w)).length;
+      score += count * 6;
+      if (content.length > 100 && content.length < 600) score += 20;
+      if (author.trim() && author.trim() !== 'Ẩn danh') score += 10;
+      return Math.min(100, score);
+    }
 
-      for (const kw of bannedKeywords.vnch) {
-        if (cleanText.includes(kw)) {
-          isVNCHMention = true;
-          for (const bad of offensiveWords.vnch) {
-            if (cleanText.includes(bad)) {
-              isOffensive = true;
-              errors.push(`Xúc phạm VNCH với từ: "${bad}"`);
-            }
-          }
+    // === TỰ ĐỘNG XÓA ===
+    function checkAutoDelete() {
+      const posts = JSON.parse(localStorage.getItem('ai_posts') || '[]');
+      const now = new Date().setHours(0,0,0,0);
+      const updated = posts.filter(post => {
+        if (post.deleteDate) {
+          const del = new Date(post.deleteDate).setHours(0,0,0,0);
+          return del > now;
         }
+        return true;
+      });
+      if (updated.length !== posts.length) {
+        localStorage.setItem('ai_posts', JSON.stringify(updated));
       }
-
-      if (bannedKeywords.dcsvn.some(kw => cleanText.includes(kw))) {
-        isOffensive = true;
-        errors.push('Xúc phạm Đảng Cộng sản Việt Nam');
-      }
-      if (bannedKeywords.ho.some(kw => cleanText.includes(kw))) {
-        for (const bad of offensiveWords.ho) {
-          if (cleanText.includes(bad)) {
-            isOffensive = true;
-            errors.push(`Xúc phạm Bác Hồ với từ: "${bad}"`);
-          }
-        }
-      }
-      if (bannedKeywords.giap.some(kw => cleanText.includes(kw))) {
-        for (const bad of offensiveWords.giap) {
-          if (cleanText.includes(bad)) {
-            isOffensive = true;
-            errors.push(`Xúc phạm Đại tướng Võ Nguyên Giáp với từ: "${bad}"`);
-          }
-        }
-      }
-      if (bannedKeywords.liet_si.test(cleanText)) {
-        isOffensive = true;
-        errors.push('Xúc phạm các anh hùng liệt sĩ');
-      }
-
-      return { isVNCHMention, isOffensive, errors };
     }
 
-    // KURAYAMI NÓI
-    const kurayamiMessages = {
-      default: ['đang nghe...', 'ở đây nè', 'kể đi nào', 'cảm xúc bạn quý giá'],
-      love: ['tình yêu khó quá ha', 'ôm cái nè', 'đừng buồn, có Kurayami đây', 'sẽ vui cùng bạn'],
-      vnch: ['Nhắc VNCH → cấm 24h nha', 'Kurayami phải tuân thủ luật', 'Không bypass được đâu'],
-      unbanned: ['Kurayami đã gỡ cấm!', 'Viết tiếp nhé', 'Hài lòng chưa nào?', 'Kurayami vui vì bạn quay lại']
-    };
-
-    function kurayamiSpeak() {
-      const title = titleInput.value.toLowerCase();
-      const content = contentInput.value.toLowerCase();
-      const cleanText = removeDiacritics(`${title} ${content}`);
-
-      // Ưu tiên thông báo gỡ cấm
-      if (localStorage.getItem('kurayami_unbanned') === 'true') {
-        chatText.textContent = kurayamiMessages.unbanned[Math.floor(Math.random() * kurayamiMessages.unbanned.length)];
-        localStorage.removeItem('kurayami_unbanned');
-        return;
-      }
-
-      if (loveKeywords.some(kw => cleanText.includes(kw))) {
-        const msg = kurayamiMessages.love[Math.floor(Math.random() * kurayamiMessages.love.length)];
-        chatText.innerHTML = `${msg} <span class="kurayami-heart">♥</span>`;
-        titleInput.classList.add('love-mode');
-        contentInput.classList.add('love-mode');
-        setTimeout(() => {
-          titleInput.classList.remove('love-mode');
-          contentInput.classList.remove('love-mode');
-        }, 2000);
-        return;
-      }
-
-      if (bannedKeywords.vnch.some(kw => cleanText.includes(kw))) {
-        chatText.textContent = kurayamiMessages.vnch[Math.floor(Math.random() * kurayamiMessages.vnch.length)];
-        return;
-      }
-
-      chatText.textContent = kurayamiMessages.default[Math.floor(Math.random() * kurayamiMessages.default.length)];
-    }
-
-    // LƯU BÀI
+    // === LƯU BÀI ===
     function savePost() {
+      if (!checkAuthor()) return;
+
+      const author = authorInput.value.trim() || 'Ẩn danh';
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
+      const mode = sendMode.value;
+      const delDate = autoDelete.checked ? deleteDate.value : null;
+
       if (!title || !content) {
-        chatText.textContent = "cần tiêu đề và nội dung";
+        chatText.textContent = "Cần tiêu đề và nội dung";
         return;
       }
 
-      const analysis = analyzePost(title, content);
+      const score = mode === 'public' ? scorePoem(title, content, author) : 0;
 
-      if (analysis.isOffensive) {
-        const reason = `Xúc phạm: ${analysis.errors.join('; ')}`;
-        localStorage.setItem(banKey, JSON.stringify({ permanent: true, reason }));
-        showPermanentBan();
-        return;
-      }
+      const post = {
+        id: Date.now() + Math.random().toString(36).substr(2,9),
+        author, title, content, mode, score,
+        timestamp: Date.now(),
+        deleteDate: delDate
+      };
 
-      if (analysis.isVNCHMention) {
-        const reason = 'Nhắc VNCH dù cố ý hay cố tình';
-        const until = Date.now() + 24 * 60 * 60 * 1000;
-        localStorage.setItem(banKey, JSON.stringify({ until, reason, permanent: false }));
-        startCountdown(until, reason);
-        statusDiv.innerHTML = '<div class="warning-banner">Nhắc VNCH → Cấm 24h.</div>';
-        return;
-      }
-
-      const post = { id: Date.now(), title, content };
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      const posts = JSON.parse(localStorage.getItem('ai_posts') || '[]');
       posts.push(post);
-      localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+      localStorage.setItem('ai_posts', JSON.stringify(posts));
+
+      authorInput.value = '';
       titleInput.value = '';
       contentInput.value = '';
+      autoDelete.checked = false;
+      deleteDate.disabled = true;
+      shareSection.style.display = 'none';
+
+      if (mode === 'public') {
+        const link = generateShareLink(post.id);
+        shareLink.textContent = link;
+        shareSection.style.display = 'block';
+        chatText.textContent = `Điểm: ${score}/100!`;
+      } else {
+        chatText.textContent = "Đã lưu riêng!";
+      }
+
       loadPosts();
-      chatText.innerHTML = `đã lưu! <span class="kurayami-heart">♥</span>`;
     }
 
-    // HIỂN THỊ BÀI
+    // === LINK CHIA SẺ ===
+    function generateShareLink(id) {
+      const base = window.location.href.split('?')[0];
+      return `${base}?poem=${id}`;
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(shareLink.textContent).then(() => {
+        chatText.textContent = "Đã copy!";
+      });
+    }
+
+    // === HIỂN THỊ BÀI ===
     function loadPosts() {
+      checkAutoDelete();
       postsDiv.innerHTML = '';
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
-      posts.reverse().forEach(post => {
+      const posts = JSON.parse(localStorage.getItem('ai_posts') || '[]');
+      const publicPosts = posts.filter(p => p.mode === 'public');
+      publicPosts.sort((a,b) => b.score - a.score);
+
+      publicPosts.forEach(post => {
         const div = document.createElement('div');
         div.className = 'post';
+        const delInfo = post.deleteDate ? `<br><small class="delete-date">Xóa: ${new Date(post.deleteDate).toLocaleDateString('vi-VN')}</small>` : '';
         div.innerHTML = `
           <h3>${post.title}</h3>
+          <div class="post-meta">
+            Tác giả: <strong>${post.author}</strong> | 
+            Điểm: <span class="score">${post.score}/100</span>${delInfo}
+          </div>
+          <p style="white-space:pre-wrap; margin:8px 0; font-size:0.95em;">${post.content}</p>
           <div class="btn-group">
-            <button onclick="viewPost(${post.id})">Xem</button>
-            <button onclick="deletePost(${post.id})">Xóa</button>
+            <button onclick="deletePost('${post.id}')">Xóa</button>
           </div>
         `;
         postsDiv.appendChild(div);
       });
     }
 
-    function viewPost(id) {
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
-      const post = posts.find(p => p.id === id);
-      if (post) alert(`Ký ức:\n\n${post.title}\n\n${post.content}`);
-    }
-
     function deletePost(id) {
-      if (confirm('Xóa ký ức này?')) {
-        let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      if (confirm('Xóa bài này?')) {
+        let posts = JSON.parse(localStorage.getItem('ai_posts') || '[]');
         posts = posts.filter(p => p.id !== id);
-        localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+        localStorage.setItem('ai_posts', JSON.stringify(posts));
         loadPosts();
       }
     }
 
     function clearAll() {
-      if (confirm('Xóa hết ký ức?')) {
-        localStorage.removeItem('kurayami_posts');
+      if (confirm('Xóa hết bài?')) {
+        localStorage.removeItem('ai_posts');
         loadPosts();
       }
     }
 
-    // GỠ CẤM CHO MÁY
-    const targetDevice = "ZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlW";
-    if (deviceId === targetDevice) {
-      localStorage.removeItem(banKey);
-      localStorage.setItem('kurayami_unbanned', 'true');
-      statusDiv.innerHTML = `
-        <div class="success-banner">
-          Kurayami đã gỡ cấm cho bạn!<br>
-          <strong>Máy: ${deviceId}</strong><br>
-          Viết tiếp cảm xúc nhé!
-        </div>
-      `;
+    // === AI NÓI ===
+    function aiSpeak() {
+      const text = `${authorInput.value} ${titleInput.value} ${contentInput.value}`.toLowerCase();
+      if (text.includes('yeu') || text.includes('thuong')) {
+        chatText.textContent = "Thơ hay!";
+        return;
+      }
+      if (text.includes('kurayami') || text.includes('kirada')) {
+        chatText.textContent = "Tên cấm!";
+        return;
+      }
+      chatText.textContent = "Viết tiếp...";
     }
 
-    // KHỞI ĐỘNG
-    checkBan();
-    loadPosts();
-    kurayamiSpeak();
+    // === XỬ LÝ LINK ===
+    const urlParams = new URLSearchParams(window.location.search);
+    const poemId = urlParams.get('poem');
+    if (poemId) {
+      const posts = JSON.parse(localStorage.getItem('ai_posts') || '[]');
+      const poem = posts.find(p => p.id === poemId && p.mode === 'public');
+      if (poem) {
+        document.body.innerHTML = `
+          <div style="padding:20px; text-align:center; max-width:600px; margin:auto; font-family:Roboto;">
+            <h1 style="color:#212529; font-family:'Dancing Script',cursive; font-size:2em;">Thơ AI</h1>
+            <h2 style="color:#495057; margin:15px 0;">${poem.title}</h2>
+            <p style="font-size:0.9em; color:#6c757d;">Tác giả: <strong>${poem.author}</strong> | Điểm: <strong style="color:#28a745;">${poem.score}/100</strong></p>
+            <p style="white-space:pre-wrap; font-size:1.1em; margin:25px 0; line-height:1.8; text-align:left;">
+              ${poem.content}
+            </p>
+            <p style="color:#888; font-size:0.8em;">Gửi từ AI</p>
+          </div>
+        `;
+      }
+    }
 
-    titleInput.addEventListener('input', kurayamiSpeak);
-    contentInput.addEventListener('input', kurayamiSpeak);
+    // === SỰ KIỆN ===
+    autoDelete.addEventListener('change', () => {
+      deleteDate.disabled = !autoDelete.checked;
+    });
+
+    // === KHỞI ĐỘNG ===
+    setInterval(checkAutoDelete, 3600000);
+    loadPosts();
+    aiSpeak();
+
+    authorInput.addEventListener('input', () => { checkAuthor(); aiSpeak(); });
+    titleInput.addEventListener('input', aiSpeak);
+    contentInput.addEventListener('input', aiSpeak);
 
     window.addEventListener('load', () => {
       document.getElementById('reloadNotice').style.display = 'block';

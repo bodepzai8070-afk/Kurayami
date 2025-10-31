@@ -1,181 +1,766 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kurayami Thơ Tình 💞</title>
-<style>
-  body {
-    font-family: "Georgia", serif;
-    background: radial-gradient(circle at top, #ffd1dc, #b8c6db);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background 1s, color 1s;
-    overflow-x: hidden;
-  }
-  .container {
-    background: rgba(255,255,255,0.9);
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-    width: 90%;
-    max-width: 550px;
-  }
-  h2 { text-align: center; color: #d63384; }
-  input, textarea, button {
-    width: 100%; padding: 10px; margin-top: 8px;
-    border-radius: 10px; border: 1px solid #ccc;
-    font-size: 16px;
-  }
-  textarea { height: 150px; resize: none; }
-  button {
-    background: #ff4d6d; color: white; border: none;
-    font-weight: bold; cursor: pointer; transition: 0.3s;
-  }
-  button:hover { background: #d63384; }
-  .poem-box {
-    background: #fff5f7; padding: 15px; border-radius: 10px; margin-top: 20px;
-  }
-  .kurayami { text-align: center; font-size: 12px; margin-top: 10px; color: #555; }
-  .advice { margin-top: 10px; font-style: italic; color: #333; background: #f8f1ff; padding: 8px; border-radius: 8px; }
-  .heart {
-    position: fixed; bottom: 0; color: red; opacity: 0.8;
-    animation: floatUp 5s linear infinite;
-  }
-  @keyframes floatUp {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kurayami – Thơ & Cảm Xúc</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --kurayami-purple: #6a1b9a;
+      --kurayami-pink: #ec407a;
+      --kurayami-light: #f3e5f5;
+      --kurayami-dark: #4a148c;
+      --shadow: 0 4px 15px rgba(106, 27, 154, 0.2);
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --success: #28a745;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #ede7f6, #f3e5f5);
+      color: #333;
+      font-size: 16px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    header {
+      background: linear-gradient(to right, var(--kurayami-purple), var(--kurayami-pink));
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8em;
+      box-shadow: var(--shadow);
+    }
+    main {
+      max-width: 100%;
+      padding: 15px;
+    }
+    h2 {
+      color: var(--kurayami-purple);
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5em;
+      text-align: center;
+      margin: 10px 0;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 2px solid #e1bee7;
+      border-radius: 10px;
+      font-size: 1em;
+      background: #fafafa;
+      transition: all 0.3s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--kurayami-pink);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(236, 64, 122, 0.2);
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    button {
+      background: linear-gradient(to right, var(--kurayami-purple), var(--kurayami-pink));
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: bold;
+      margin: 5px 5px 5px 0;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(106, 27, 154, 0.4);
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    button.danger {
+      background: var(--danger);
+    }
+    button.warning {
+      background: var(--warning);
+      color: #000;
+    }
+    button.success {
+      background: var(--success);
+    }
+    .post {
+      background: var(--kurayami-light);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--kurayami-pink);
+      transition: transform 0.2s;
+      position: relative;
+    }
+    .post:hover {
+      transform: translateX(3px);
+    }
+    .post h3 {
+      margin: 0 0 8px;
+      color: var(--kurayami-dark);
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2em;
+    }
+    .post-meta {
+      font-size: 0.85em;
+      color: #6a1b9a;
+      margin: 4px 0;
+    }
+    .score {
+      font-weight: bold;
+      color: #e91e63;
+      font-size: 1.1em;
+    }
+    .btn-group {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .report-btn {
+      background: #ff9800;
+      font-size: 0.8em;
+      padding: 4px 8px;
+    }
+    .mod-controls {
+      display: none;
+      gap: 5px;
+      margin-top: 5px;
+      font-size: 0.8em;
+    }
+    .mod-controls.show {
+      display: flex;
+    }
+    #kurayamiChat {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      font-size: 0.9em;
+      color: var(--kurayami-purple);
+      font-weight: bold;
+      max-width: 80%;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 100;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .share-section {
+      background: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 10px 0;
+      border: 1px solid #e1bee7;
+      box-shadow: var(--shadow);
+    }
+    .share-link {
+      background: #f0f0f0;
+      padding: 8px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.85em;
+      word-break: break-all;
+      margin: 8px 0;
+    }
+    .copy-btn {
+      background: #28a745;
+      font-size: 0.8em;
+      padding: 6px 10px;
+    }
+    .delete-date {
+      font-size: 0.85em;
+      color: #6a1b9a;
+    }
+    .share-fb-btn {
+      background: #1877f2;
+      color: white;
+      font-weight: bold;
+    }
+    .permanent-ban {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 10px 0;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.95em;
+      border: 1px solid #dc3545;
+      box-shadow: var(--shadow);
+      display: none;
+    }
+    .permanent-ban.show {
+      display: block;
+    }
+    .fb-link-ban {
+      color: #1877f2;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+    .warning-banner {
+      background: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 0.9em;
+      text-align: center;
+      border: 1px solid #ffeaa7;
+      display: none;
+    }
+    .warning-banner.show {
+      display: block;
+    }
+    @media (max-width: 600px) {
+      header { font-size: 1.5em; padding: 12px; }
+      main { padding: 10px; }
+      h2 { font-size: 1.3em; }
+      input, textarea, select { padding: 8px; font-size: 0.9em; }
+      textarea { min-height: 100px; }
+      button { padding: 8px 12px; font-size: 0.85em; }
+      .post { padding: 10px; }
+      .post h3 { font-size: 1.1em; }
+      #kurayamiChat { padding: 8px 12px; font-size: 0.85em; max-width: 70%; }
+      .permanent-ban { font-size: 0.9em; padding: 10px; }
+    }
+  </style>
 </head>
 <body>
+  <header>Kurayami – Thơ & Cảm Xúc</header>
 
-<div class="container">
-  <h2>💌 Kurayami Thơ Gửi Người Thương 💌</h2>
-
-  <div id="nameSection">
-    <label>Người viết:</label>
-    <input type="text" id="authorName" placeholder="Tên bạn...">
-    <label>Gửi đến:</label>
-    <input type="text" id="receiverName" placeholder="Tên người bạn yêu...">
-    <button onclick="startWriting()">Bắt đầu viết thơ</button>
+  <!-- BANNER CẤM VĨNH VIỄN -->
+  <div id="permanentBan" class="permanent-ban">
+    <p><strong>BẠN ĐÃ BỊ CẤM VĨNH VIỄN!</strong></p>
+    <p>Chỉ <strong>Kurayami</strong> & <strong>Kirada</strong> được dùng tên này.</p>
+    <p>Liên hệ: <a href="https://www.facebook.com/share/1CkGe5kgSu/" target="_blank" class="fb-link-ban">fb.com/share/1CkGe5kgSu/</a></p>
   </div>
 
-  <div id="poemSection" style="display:none;">
-    <label>Viết bài thơ của bạn:</label>
-    <textarea id="poemText" placeholder="Hãy viết những cảm xúc thật lòng..."></textarea>
-    <button onclick="savePoem()">Lưu bài thơ 💖</button>
+  <!-- BANNER CẢNH BÁO -->
+  <div id="warningBanner" class="warning-banner">
+    <span id="warningText"></span>
   </div>
 
-  <div id="savedPoems"></div>
+  <main>
+    <div id="status"></div>
 
-  <div class="kurayami">🌙 Được tạo bởi <b>Kurayami</b> – Ngày <span id="today"></span></div>
-</div>
+    <h2>Viết Thơ</h2>
+    <input id="author" type="text" placeholder="Tên bạn (thật hoặc giả)..." oninput="checkAuthor(); kurayamiSpeak();" />
+    <input id="title" type="text" placeholder="Tiêu đề thơ..." oninput="kurayamiSpeak()" />
+    <textarea id="content" placeholder="Viết thơ... Kurayami đang nghe" oninput="kurayamiSpeak()"></textarea>
+    
+    <select id="sendMode">
+      <option value="private">Chỉ mình tôi</option>
+      <option value="public">Gửi công khai (có điểm)</option>
+    </select>
 
-<audio autoplay loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_06ef763ea2.mp3?filename=romantic-piano-112199.mp3" type="audio/mpeg">
-</audio>
+    <div id="deleteDateSection" style="margin:8px 0;">
+      <label class="delete-date">
+        <input type="checkbox" id="autoDelete" />
+        Tự động xóa sau ngày:
+      </label>
+      <input type="date" id="deleteDate" disabled style="margin-top:4px;" />
+    </div>
 
-<script>
-document.getElementById("today").textContent = new Date().toLocaleDateString('vi-VN');
+    <div id="shareSection" class="share-section" style="display:none;">
+      <p><strong>Link chia sẻ:</strong></p>
+      <div id="shareLink" class="share-link">Đang tạo...</div>
+      <button class="copy-btn" onclick="copyLink()">Copy</button>
+      <button class="share-fb-btn" onclick="shareToFB()">Chia sẻ lên Facebook</button>
+    </div>
 
-const badWords = ["đm","dm","mẹ","ngu","chó","cmm","cc","vcl","dcm","lồn","địt","loz","đjt","cặc","fuck","shit"];
-const sarcasmWords = ["đồ ngốc","đáng ghét","khùng","đồ dở hơi","đồ đáng yêu ghê"];
+    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+      <button id="saveBtn" onclick="savePost()">Gửi / Lưu</button>
+      <button onclick="clearAll()">Xóa Hết</button>
+    </div>
 
-function filterBadWords(text) {
-  let clean = text;
-  let foundBad = false;
-  badWords.forEach(w => {
-    const regex = new RegExp(w, "gi");
-    if (regex.test(clean)) foundBad = true;
-    clean = clean.replace(regex, "💫");
-  });
-  if (foundBad) alert("⚠️ Kurayami đã xoá ngôn từ không phù hợp để giữ thơ trong sáng!");
-  return clean;
-}
+    <hr style="border: 1px dashed #e1bee7; margin: 20px 0;">
 
-function detectSarcasm(text) {
-  return sarcasmWords.some(w => new RegExp(w, "gi").test(text));
-}
+    <h2>Kho Thơ (Sắp xếp theo điểm)</h2>
+    <div id="posts"></div>
+  </main>
 
-function startWriting() {
-  const a = document.getElementById("authorName").value.trim();
-  const r = document.getElementById("receiverName").value.trim();
-  if (!a || !r) return alert("Vui lòng nhập đầy đủ tên!");
-  localStorage.setItem("author", a);
-  localStorage.setItem("receiver", r);
-  document.getElementById("nameSection").style.display = "none";
-  document.getElementById("poemSection").style.display = "block";
-  loadPoems();
-}
+  <div id="kurayamiChat">
+    <span style="color:#ec407a;">Kurayami</span>
+    <span id="chatText">đang lắng nghe...</span>
+  </div>
 
-function savePoem() {
-  let text = document.getElementById("poemText").value.trim();
-  if (!text) return alert("Bài thơ không được để trống!");
-  text = filterBadWords(text);
-  const sarcastic = detectSarcasm(text);
-  if (sarcastic) alert("😏 Kurayami phát hiện châm biếm, nhưng vẫn giữ lại vì thơ cũng cần chút hóm hỉnh!");
-  const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-  poems.push({ 
-    author: localStorage.getItem("author"),
-    receiver: localStorage.getItem("receiver"),
-    poem: text,
-    date: new Date().toLocaleString('vi-VN'),
-    score: null
-  });
-  localStorage.setItem("poems", JSON.stringify(poems));
-  document.getElementById("poemText").value = "";
-  loadPoems();
-}
+  <script>
+    const postsDiv = document.getElementById('posts');
+    const saveBtn = document.getElementById('saveBtn');
+    const statusDiv = document.getElementById('status');
+    const chatText = document.getElementById('chatText');
+    const authorInput = document.getElementById('author');
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+    const sendMode = document.getElementById('sendMode');
+    const autoDelete = document.getElementById('autoDelete');
+    const deleteDate = document.getElementById('deleteDate');
+    const shareSection = document.getElementById('shareSection');
+    const shareLink = document.getElementById('shareLink');
+    const permanentBan = document.getElementById('permanentBan');
+    const warningBanner = document.getElementById('warningBanner');
+    const warningText = document.getElementById('warningText');
 
-function loadPoems() {
-  const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-  const box = document.getElementById("savedPoems");
-  box.innerHTML = "<h3>🌸 Những Bài Thơ Đã Viết 🌸</h3>";
-  poems.forEach((p, i) => {
-    const advice = p.score !== null ? getAdvice(p.score) : "";
-    box.innerHTML += `
-      <div class="poem-box">
-        <b>${p.author}</b> gửi đến <b>${p.receiver}</b>:<br>
-        <p>${p.poem.replace(/\n/g, "<br>")}</p>
-        <div class="date">📅 ${p.date}</div>
-        <label>Chấm điểm (0-10):</label>
-        <input type="number" id="score${i}" min="0" max="10" value="${p.score ?? ""}">
-        <button onclick="ratePoem(${i})">Lưu điểm</button>
-        ${advice}
-      </div>`;
-  });
-}
+    let currentPost = null;
+    const BANNED_KEY = 'kurayami_permanent_ban';
+    const WARN_KEY = 'kurayami_warning_count';
+    const BLOCKED_TEMP_KEY = 'kurayami_blocked_until';
+    const REPORTS_KEY = 'kurayami_reports';
 
-function ratePoem(i) {
-  const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-  const val = parseFloat(document.getElementById(`score${i}`).value);
-  if (isNaN(val) || val < 0 || val > 10) return alert("Điểm từ 0–10 nhé!");
-  poems[i].score = val;
-  localStorage.setItem("poems", JSON.stringify(poems));
-  alert("💖 Kurayami đã ghi nhận cảm xúc của bạn!");
-  loadPoems();
-}
+    // === DANH SÁCH CHỮI TỤC NẶNG (CHỈ CẤM CÁI NÀY) ===
+    const BAD_WORDS = [
+      'địt', 'đm', 'đmm', 'dm', 'đĩ', 'con đĩ', 'điếm', 'lồn', 'cặc', 'buồi', 'vcl', 'vl', 'vcll', 'đụ', 'đù',
+      'má', 'mẹ mày', 'mẹ mày chết', 'thằng chó', 'con chó', 'đồ chó', 'chó má', 'chó đẻ',
+      'óc chó', 'óc lồn', 'đầu buồi', 'đầu đất', 'ngu như bò', 'ngu lồn', 'đồ ngu', 'thằng ngu',
+      'đéo', 'đếch', 'đệt', 'cút', 'biến', 'xéo', 'đồ biến thái', 'thằng biến thái',
+      'liếm', 'liếm cặc', 'liếm lồn', 'thọc', 'đâm', 'chịch', 'phang', 'nện', 'đụ mẹ',
+      'đồ đểu', 'thằng đểu', 'con đểu', 'đồ rác rưởi', 'đồ bỏ đi', 'đồ vô dụng', 'thằng vô dụng'
+    ];
 
-function getAdvice(score) {
-  if (score < 5) return `<div class="advice">😔 Kurayami: Cậu viết chưa đạt, nhưng đừng buồn nhé! Ai cũng có lúc thất bại, thử lại nào 💪</div>`;
-  if (score < 7) return `<div class="advice">😊 Kurayami: Ôi, thơ cậu hay quá nè! Chắc người ấy đọc sẽ cười hạnh phúc đó 😍</div>`;
-  return `<div class="advice">💖 Kurayami: Xuất sắc luôn! Cậu và người ấy chắc chắn sẽ bền lâu và ngọt ngào mãi mãi 💞</div>`;
-}
+    // === HỆ THỐNG CẢNH BÁO & KHÓA TẠM ===
+    function getWarningCount() {
+      return parseInt(localStorage.getItem(WARN_KEY) || '0');
+    }
 
-// Trái tim bay
-setInterval(() => {
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.innerHTML = "❤️";
-  h.style.left = Math.random() * 100 + "vw";
-  h.style.fontSize = (Math.random() * 20 + 10) + "px";
-  h.style.animationDuration = (Math.random() * 3 + 2) + "s";
-  document.body.appendChild(h);
-  setTimeout(() => h.remove(), 5000);
-}, 500);
-</script>
+    function addWarning() {
+      const count = getWarningCount() + 1;
+      localStorage.setItem(WARN_KEY, count.toString());
+      return count;
+    }
+
+    function resetWarnings() {
+      localStorage.removeItem(WARN_KEY);
+    }
+
+    function isTemporarilyBlocked() {
+      const blockedUntil = localStorage.getItem(BLOCKED_TEMP_KEY);
+      if (!blockedUntil) return false;
+      const now = Date.now();
+      if (now > blockedUntil) {
+        localStorage.removeItem(BLOCKED_TEMP_KEY);
+        resetWarnings();
+        return false;
+      }
+      return true;
+    }
+
+    function blockTemporarily(hours) {
+      const until = Date.now() + (hours * 60 * 60 * 1000);
+      localStorage.setItem(BLOCKED_TEMP_KEY, until.toString());
+    }
+
+    // === KIỂM TRA BAN & KHÓA TẠM ===
+    if (localStorage.getItem(BANNED_KEY) === 'true') {
+      showPermanentBan();
+    } else if (isTemporarilyBlocked()) {
+      const until = new Date(parseInt(localStorage.getItem(BLOCKED_TEMP_KEY)));
+      warningBanner.classList.add('show');
+      warningText.textContent = `Bị khóa đến: ${until.toLocaleString('vi-VN')}`;
+      document.querySelectorAll('input, textarea, select, button:not(#kurayamiChat button)').forEach(el => el.disabled = true);
+    }
+
+    function showPermanentBan() {
+      permanentBan.classList.add('show');
+      document.querySelectorAll('input, textarea, select, button').forEach(el => el.disabled = true);
+      chatText.textContent = "Bạn đã bị cấm vĩnh viễn!";
+    }
+
+    // === AI QUÉT CHỈ CHỬI TỤC ===
+    function scanForSwear(text, author = '') {
+      const lower = (text + ' ' + author).toLowerCase().replace(/[^a-zàáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ\s]/g, ' ');
+      const found = BAD_WORDS.filter(word => lower.includes(word));
+      return {
+        isSwear: found.length > 0,
+        words: found
+      };
+    }
+
+    // === KIỂM TRA TÊN ===
+    function checkAuthor() {
+      const name = authorInput.value.trim().toLowerCase();
+      if (name === 'kurayami' || name === 'kirada') return true;
+      if (name.includes('kurayami') || name.includes('kirada')) {
+        chatText.textContent = "Tên cấm! Bị cấm vĩnh viễn!";
+        localStorage.setItem(BANNED_KEY, 'true');
+        setTimeout(showPermanentBan, 1500);
+        authorInput.value = '';
+        return false;
+      }
+
+      const scan = scanForSwear(authorInput.value);
+      if (scan.isSwear) {
+        chatText.textContent = "Tên không được tục tĩu!";
+        authorInput.value = '';
+        return false;
+      }
+      return true;
+    }
+
+    // === CHẤM ĐIỂM THƠ ===
+    function scorePoem(title, content, author) {
+      let score = 0;
+      const text = `${author} ${title} ${content}`.toLowerCase();
+      const lines = content.split('\n').filter(l => l.trim());
+      if (lines.length >= 4) score += 25;
+      if (lines.length >= 8) score += 15;
+      const goodWords = ['yêu','thương','nhớ','đau','trăng','mưa','gió','mây','hồn','tim','lòng','nước mắt','nụ cười'];
+      const count = goodWords.filter(w => text.includes(w)).length;
+      score += count * 6;
+      if (content.length > 100 && content.length < 600) score += 20;
+      if (author.trim() && author.trim() !== 'Ẩn danh') score += 10;
+      return Math.min(100, score);
+    }
+
+    // === TỰ ĐỘNG XÓA ===
+    function checkAutoDelete() {
+      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      const now = new Date().setHours(0,0,0,0);
+      const updated = posts.filter(post => {
+        if (post.deleteDate) {
+          const del = new Date(post.deleteDate).setHours(0,0,0,0);
+          return del > now;
+        }
+        return true;
+      });
+      if (updated.length !== posts.length) {
+        localStorage.setItem('kurayami_posts', JSON.stringify(updated));
+      }
+    }
+
+    // === LƯU BÀI (CHỈ CẤM TỤC) ===
+    function savePost() {
+      if (localStorage.getItem(BANNED_KEY) === 'true') return;
+      if (isTemporarilyBlocked()) return;
+
+      if (!checkAuthor()) return;
+
+      const author = authorInput.value.trim() || 'Ẩn danh';
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      const fullText = `${author} ${title} ${content}`;
+      const mode = sendMode.value;
+      const delDate = autoDelete.checked ? deleteDate.value : null;
+
+      if (!title || !content) {
+        chatText.textContent = "Cần tiêu đề và nội dung";
+        return;
+      }
+
+      const scan = scanForSwear(fullText, author);
+
+      if (scan.isSwear) {
+        const count = addWarning();
+        chatText.textContent = `Tục tĩu! Cảnh báo ${count}/3`;
+        
+        if (count >= 3) {
+          localStorage.setItem(BANNED_KEY, 'true');
+          setTimeout(() => {
+            alert('Bạn đã bị cấm vĩnh viễn vì chửi tục!');
+            showPermanentBan();
+          }, 500);
+        } else if (count === 2) {
+          blockTemporarily(24);
+          alert('Cảnh báo lần 2! Khóa 24h!');
+        }
+
+        titleInput.value = contentInput.value = '';
+        kurayamiSpeak();
+        return;
+      }
+
+      const score = mode === 'public' ? scorePoem(title, content, author) : 0;
+
+      const post = {
+        id: Date.now() + Math.random().toString(36).substr(2,9),
+        author, title, content, mode, score,
+        timestamp: Date.now(),
+        deleteDate: delDate,
+        hidden: false,
+        reports: 0
+      };
+
+      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      posts.push(post);
+      localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+
+      currentPost = post;
+
+      authorInput.value = titleInput.value = contentInput.value = '';
+      autoDelete.checked = false;
+      deleteDate.disabled = true;
+      shareSection.style.display = 'none';
+
+      if (mode === 'public') {
+        const link = generateShareLink(post.id);
+        shareLink.textContent = link;
+        shareSection.style.display = 'block';
+        chatText.textContent = `Điểm: ${score}/100! Đã đăng!`;
+      } else {
+        chatText.textContent = "Đã lưu riêng! An toàn.";
+      }
+
+      resetWarnings();
+      loadPosts();
+    }
+
+    // === LINK CHIA SẺ ===
+    function generateShareLink(id) {
+      const base = window.location.href.split('?')[0];
+      return `${base}?poem=${id}`;
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(shareLink.textContent).then(() => {
+        chatText.textContent = "Đã copy link!";
+      });
+    }
+
+    // === CHIA SẺ FB ===
+    function shareToFB() {
+      if (!currentPost || currentPost.mode !== 'public') return;
+      const url = generateShareLink(currentPost.id);
+      const title = currentPost.title;
+      const author = currentPost.author;
+      const contentPreview = currentPost.content.split('\n')[0].substring(0, 100) + (currentPost.content.length > 100 ? '...' : '');
+      const score = currentPost.score;
+
+      const fbShareText = encodeURIComponent(
+        `*${title}*\n` +
+        `Tác giả: *${author}*\n` +
+        `Điểm: *${score}/100*\n\n` +
+        `"${contentPreview}"\n\n` +
+        `Đọc tại: ${url}\n\n` +
+        `Kurayami – Thơ & Cảm Xúc`
+      );
+
+      const fbURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`;
+      window.open(fbURL, '_blank', 'width=600,height=400');
+    }
+
+    // === HIỂN THỊ BÀI ===
+    function loadPosts() {
+      checkAutoDelete();
+      postsDiv.innerHTML = '';
+      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      const publicPosts = posts.filter(p => p.mode === 'public' && !p.hidden);
+      publicPosts.sort((a,b) => b.score - a.score);
+
+      const isMod = ['kurayami', 'kirada'].includes(authorInput.value.trim().toLowerCase());
+
+      publicPosts.forEach(post => {
+        const scan = scanForSwear(post.content + post.title + post.author);
+        if (scan.isSwear) return;
+
+        const div = document.createElement('div');
+        div.className = 'post';
+        const delInfo = post.deleteDate ? `<br><small class="delete-date">Xóa: ${new Date(post.deleteDate).toLocaleDateString('vi-VN')}</small>` : '';
+        div.innerHTML = `
+          <h3>${post.title}</h3>
+          <div class="post-meta">
+            Tác giả: <strong>${post.author}</strong> | 
+            Điểm: <span class="score">${post.score}/100</span>${delInfo}
+            ${post.reports > 0 ? ` | <small style="color:#e91e63;">Báo cáo: ${post.reports}</small>` : ''}
+          </div>
+          <p style="white-space:pre-wrap; margin:8px 0; font-size:0.95em;">${post.content}</p>
+          <div class="btn-group">
+            <button onclick="deletePost('${post.id}')">Xóa</button>
+            <button class="share-fb-btn" onclick="shareSingleToFB('${post.id}')">Chia sẻ FB</button>
+            <button class="report-btn" onclick="reportPost('${post.id}')">Báo cáo</button>
+          </div>
+          <div class="mod-controls ${isMod ? 'show' : ''}">
+            <button class="danger" onclick="modDelete('${post.id}')">Xóa vĩnh viễn</button>
+            <button class="warning" onclick="toggleHide('${post.id}', true)">Ẩn</button>
+            <button class="success" onclick="toggleHide('${post.id}', false)">Hiện</button>
+          </div>
+        `;
+        postsDiv.appendChild(div);
+      });
+    }
+
+    function reportPost(id) {
+      if (confirm('Báo cáo bài này vì chửi tục?')) {
+        let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+        const post = posts.find(p => p.id === id);
+        if (post) {
+          post.reports = (post.reports || 0) + 1;
+          if (post.reports >= 3) {
+            post.hidden = true;
+            alert('Bài đã bị ẩn do quá nhiều báo cáo!');
+          }
+          localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+          loadPosts();
+        }
+      }
+    }
+
+    function modDelete(id) {
+      if (confirm('Xóa vĩnh viễn bài này? (Mod only)')) {
+        let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+        posts = posts.filter(p => p.id !== id);
+        localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+        loadPosts();
+      }
+    }
+
+    function toggleHide(id, hide) {
+      let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      const post = posts.find(p => p.id === id);
+      if (post) {
+        post.hidden = hide;
+        localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+        loadPosts();
+      }
+    }
+
+    function shareSingleToFB(id) {
+      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      const post = posts.find(p => p.id === id && p.mode === 'public' && !p.hidden);
+      if (!post) return;
+
+      const scan = scanForSwear(post.content + post.title + post.author);
+      if (scan.isSwear) {
+        alert("Bài này chứa nội dung không phù hợp, không thể chia sẻ.");
+        return;
+      }
+
+      const url = generateShareLink(id);
+      const title = post.title;
+      const author = post.author;
+      const contentPreview = post.content.split('\n')[0].substring(0, 100) + (post.content.length > 100 ? '...' : '');
+      const score = post.score;
+
+      const fbShareText = encodeURIComponent(
+        `*${title}*\n` +
+        `Tác giả: *${author}*\n` +
+        `Điểm: *${score}/100*\n\n` +
+        `"${contentPreview}"\n\n` +
+        `Đọc tại: ${url}\n\n` +
+        `Kurayami – Thơ & Cảm Xúc`
+      );
+
+      const fbURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`;
+      window.open(fbURL, '_blank', 'width=600,height=400');
+    }
+
+    function deletePost(id) {
+      if (confirm('Xóa bài này?')) {
+        let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+        posts = posts.filter(p => p.id !== id);
+        localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+        loadPosts();
+      }
+    }
+
+    function clearAll() {
+      if (confirm('Xóa hết bài?')) {
+        localStorage.removeItem('kurayami_posts');
+        loadPosts();
+      }
+    }
+
+    // === KURAYAMI NÓI (THÔNG MINH, KHÔNG PHÁN XÉT CHÂM BIẾM) ===
+    function kurayamiSpeak() {
+      const text = `${authorInput.value} ${titleInput.value} ${contentInput.value}`.toLowerCase();
+      const scan = scanForSwear(text);
+
+      if (scan.isSwear) {
+        chatText.textContent = "Ngôn từ không đẹp... Kurayami buồn...";
+        return;
+      }
+
+      if (text.includes('yeu') || text.includes('thuong')) {
+        chatText.textContent = "Thơ tình hay! Kurayami thích!";
+      } else if (text.includes('buồn') || text.includes('đau')) {
+        chatText.textContent = "Thơ buồn... Kurayami ôm bạn...";
+      } else if (text.includes('vui') || text.includes('hạnh phúc')) {
+        chatText.textContent = "Thơ vui! Kurayami cười!";
+      } else if (text.includes('châm biếm') || text.includes('mỉa mai')) {
+        chatText.textContent = "Châm biếm cũng là nghệ thuật! Viết đi!";
+      } else {
+        chatText.textContent = "Viết tiếp đi... Kurayami đang nghe";
+      }
+    }
+
+    // === XỬ LÝ LINK CHIA SẺ ===
+    const urlParams = new URLSearchParams(window.location.search);
+    const poemId = urlParams.get('poem');
+    if (poemId) {
+      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
+      const poem = posts.find(p => p.id === poemId && p.mode === 'public' && !p.hidden);
+      if (poem) {
+        const scan = scanForSwear(poem.content + poem.title + poem.author);
+        if (scan.isSwear) {
+          document.body.innerHTML = `<div style="padding:50px; text-align:center; color:#dc3545; font-weight:bold;">Bài thơ này đã bị xóa do vi phạm nội quy.</div>`;
+          return;
+        }
+
+        document.body.innerHTML = `
+          <div style="padding:20px; text-align:center; max-width:600px; margin:auto; font-family:Roboto;">
+            <h1 style="color:#6a1b9a; font-family:'Dancing Script',cursive; font-size:2em;">Kurayami Thơ</h1>
+            <h2 style="color:#4a148c; margin:15px 0;">${poem.title}</h2>
+            <p style="font-size:0.9em; color:#6a1b9a;">Tác giả: <strong>${poem.author}</strong> | Điểm: <strong style="color:#e91e63;">${poem.score}/100</strong></p>
+            <p style="white-space:pre-wrap; font-size:1.1em; margin:25px 0; line-height:1.8; text-align:left;">
+              ${poem.content}
+            </p>
+            <p style="color:#888; font-size:0.8em;">Gửi từ Kurayami</p>
+            <button onclick="shareSingleToFB('${poem.id}')" style="margin-top:15px; background:#1877f2; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+              Chia sẻ lên Facebook
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // === SỰ KIỆN ===
+    autoDelete.addEventListener('change', () => {
+      deleteDate.disabled = !autoDelete.checked;
+    });
+
+    // === KHỞI ĐỘNG ===
+    setInterval(checkAutoDelete, 3600000);
+    setInterval(() => {
+      if (isTemporarilyBlocked()) {
+        const until = new Date(parseInt(localStorage.getItem(BLOCKED_TEMP_KEY)));
+        warningBanner.classList.add('show');
+        warningText.textContent = `Bị khóa đến: ${until.toLocaleString('vi-VN')}`;
+      } else {
+        warningBanner.classList.remove('show');
+        kurayamiSpeak();
+      }
+    }, 5000);
+
+    loadPosts();
+    kurayamiSpeak();
+
+    authorInput.addEventListener('input', () => { checkAuthor(); kurayamiSpeak(); });
+    titleInput.addEventListener('input', kurayamiSpeak);
+    contentInput.addEventListener('input', kurayamiSpeak);
+  </script>
 </body>
 </html>

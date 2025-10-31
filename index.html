@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Viết Văn & Viết Sử - Kurayami</title>
+  <title>Kurayami – Viết Cảm Xúc</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -11,85 +11,76 @@
       --kurayami-pink: #ec407a;
       --kurayami-light: #f3e5f5;
       --kurayami-dark: #4a148c;
-      --shadow: 0 4px 15px rgba(106, 27, 154, 0.2);
+      --shadow: 0 4px 10px rgba(106, 27, 154, 0.2);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #ede7f6 0%, #f3e5f5 100%);
-      margin: 0;
-      padding: 0;
+      background: linear-gradient(135deg, #ede7f6, #f3e5f5);
       color: #333;
+      font-size: 16px;
+      line-height: 1.5;
+      overflow-x: hidden;
     }
     header {
       background: linear-gradient(to right, var(--kurayami-purple), var(--kurayami-pink));
       color: white;
-      padding: 20px;
+      padding: 15px;
       text-align: center;
       font-family: 'Dancing Script', cursive;
-      font-size: 2.2em;
+      font-size: 1.8em;
       box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-    header::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23ffffff20" d="M0,50 Q25,30 50,50 T100,50 Q75,70 50,50 T0,50"/></svg>');
-      background-size: 60px;
-      animation: float 6s infinite ease-in-out;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
     }
     main {
-      max-width: 850px;
-      margin: 30px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      position: relative;
+      max-width: 100%;
+      padding: 15px;
     }
     h2 {
       color: var(--kurayami-purple);
       font-family: 'Dancing Script', cursive;
-      font-size: 1.8em;
-      margin-bottom: 15px;
+      font-size: 1.5em;
       text-align: center;
+      margin: 10px 0;
     }
     input, textarea {
       width: 100%;
-      padding: 14px;
-      margin: 12px 0;
+      padding: 10px;
+      margin: 8px 0;
       border: 2px solid #e1bee7;
-      border-radius: 12px;
-      font-size: 1.1em;
-      transition: all 0.3s;
+      border-radius: 10px;
+      font-size: 1em;
       background: #fafafa;
+      transition: all 0.3s;
     }
     input:focus, textarea:focus {
       border-color: var(--kurayami-pink);
       outline: none;
       box-shadow: 0 0 0 3px rgba(236, 64, 122, 0.2);
     }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
     button {
       background: linear-gradient(to right, var(--kurayami-purple), var(--kurayami-pink));
       color: white;
       border: none;
-      padding: 12px 20px;
-      border-radius: 12px;
+      padding: 10px 15px;
+      border-radius: 10px;
       cursor: pointer;
-      margin: 8px 5px 8px 0;
-      font-size: 1em;
+      font-size: 0.9em;
       font-weight: bold;
+      margin: 5px 5px 5px 0;
+      box-shadow: var(--shadow);
       transition: all 0.3s;
-      box-shadow: 0 3px 8px rgba(106, 27, 154, 0.3);
     }
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 12px rgba(106, 27, 154, 0.4);
+      box-shadow: 0 4px 12px rgba(106, 27, 154, 0.4);
     }
     button:disabled {
       background: #ccc;
@@ -98,47 +89,47 @@
     }
     .post {
       background: var(--kurayami-light);
-      padding: 18px;
-      border-radius: 16px;
-      margin-bottom: 15px;
-      border-left: 5px solid var(--kurayami-pink);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--kurayami-pink);
       transition: transform 0.2s;
     }
     .post:hover {
-      transform: translateX(5px);
+      transform: translateX(3px);
     }
     .post h3 {
-      margin: 0 0 10px;
+      margin: 0 0 8px;
       color: var(--kurayami-dark);
       font-family: 'Dancing Script', cursive;
-      font-size: 1.4em;
+      font-size: 1.2em;
     }
     .btn-group {
-      margin-top: 12px;
+      display: flex;
+      gap: 5px;
     }
     #kurayamiChat {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 15px;
+      right: 15px;
       background: white;
-      padding: 15px 20px;
-      border-radius: 50px;
+      padding: 10px 15px;
+      border-radius: 20px;
       box-shadow: var(--shadow);
-      font-size: 1.1em;
+      font-size: 0.9em;
       color: var(--kurayami-purple);
       font-weight: bold;
-      animation: pulse 2s infinite;
-      z-index: 100;
-      max-width: 300px;
+      max-width: 80%;
       text-align: center;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
+      z-index: 100;
+      animation: pulse 2s infinite;
     }
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
     }
     #banNotice {
       position: fixed;
@@ -149,12 +140,11 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-size: 1.6em;
       text-align: center;
       z-index: 9999;
-      padding: 30px;
+      padding: 15px;
       display: none;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(5px);
     }
     #banNotice.show {
       display: flex;
@@ -165,27 +155,25 @@
       to { opacity: 1; }
     }
     #countdown {
-      font-size: 3em;
-      margin: 20px 0;
+      font-size: 2em;
+      margin: 15px 0;
       color: #ff5252;
       font-weight: bold;
-      text-shadow: 0 0 10px rgba(255,82,82,0.5);
     }
     #deviceId {
-      font-size: 0.8em;
-      margin-top: 15px;
+      font-size: 0.7em;
       color: #e0e0e0;
     }
     #reloadNotice {
       background: linear-gradient(to right, #ff5252, #f50057);
       color: white;
-      padding: 14px;
+      padding: 10px;
       text-align: center;
       font-weight: bold;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      font-size: 1.1em;
-      box-shadow: 0 4px 10px rgba(245,0,87,0.3);
+      margin-bottom: 10px;
+      border-radius: 10px;
+      font-size: 0.9em;
+      box-shadow: var(--shadow);
       animation: warning 2s infinite;
     }
     @keyframes warning {
@@ -193,18 +181,18 @@
       50% { transform: scale(1.02); }
     }
     .love-mode {
-      border: 3px solid #ff4081 !important;
-      box-shadow: 0 0 15px rgba(255,64,129,0.4) !important;
+      border: 2px solid #ff4081 !important;
+      box-shadow: 0 0 10px rgba(255,64,129,0.4) !important;
       animation: lovePulse 1.5s infinite;
     }
     @keyframes lovePulse {
-      0% { box-shadow: 0 0 15px rgba(255,64,129,0.4); }
-      50% { box-shadow: 0 0 25px rgba(255,64,129,0.7); }
-      100% { box-shadow: 0 0 15px rgba(255,64,129,0.4); }
+      0% { box-shadow: 0 0 10px rgba(255,64,129,0.4); }
+      50% { box-shadow: 0 0 15px rgba(255,64,129,0.6); }
+      100% { box-shadow: 0 0 10px rgba(255,64,129,0.4); }
     }
     .kurayami-heart {
       color: #ff4081;
-      font-size: 1.3em;
+      font-size: 1.1em;
       animation: heartbeat 1.5s infinite;
     }
     @keyframes heartbeat {
@@ -214,83 +202,128 @@
     .warning-banner {
       background: #fff3cd;
       color: #856404;
-      padding: 12px;
-      border-radius: 12px;
-      margin: 15px 0;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
       font-weight: bold;
       text-align: center;
-      border: 2px solid #ffc107;
-      animation: shake 0.5s;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
+      border: 1px solid #ffc107;
+      font-size: 0.9em;
     }
     .permanent-ban {
       background: #f8d7da;
       color: #721c24;
-      padding: 15px;
-      border-radius: 12px;
-      margin: 15px 0;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
       font-weight: bold;
       text-align: center;
-      border: 2px solid #dc3545;
-      font-size: 1.1em;
+      border: 1px solid #dc3545;
+      font-size: 0.9em;
     }
     .law-notice {
       background: #d1ecf1;
       color: #0c5460;
-      padding: 12px;
-      border-radius: 12px;
-      margin: 15px 0;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
       font-weight: bold;
       text-align: center;
-      border: 2px solid #17a2b8;
+      border: 1px solid #17a2b8;
+      font-size: 0.9em;
     }
     .fb-link {
       color: #1877f2;
       text-decoration: underline;
       font-weight: bold;
+      word-break: break-all;
+    }
+    @media (max-width: 600px) {
+      header {
+        font-size: 1.5em;
+        padding: 12px;
+      }
+      main {
+        padding: 10px;
+      }
+      h2 {
+        font-size: 1.3em;
+      }
+      input, textarea {
+        padding: 8px;
+        font-size: 0.9em;
+      }
+      textarea {
+        min-height: 100px;
+      }
+      button {
+        padding: 8px 12px;
+        font-size: 0.85em;
+      }
+      .post {
+        padding: 10px;
+      }
+      .post h3 {
+        font-size: 1.1em;
+      }
+      #kurayamiChat {
+        padding: 8px 12px;
+        font-size: 0.85em;
+        max-width: 70%;
+      }
+      #banNotice {
+        font-size: 1.2em;
+        padding: 10px;
+      }
+      #countdown {
+        font-size: 1.8em;
+      }
+      #deviceId {
+        font-size: 0.65em;
+      }
+      .warning-banner, .permanent-ban, .law-notice {
+        font-size: 0.85em;
+        padding: 8px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>Kurayami – Nơi Tình Yêu & Văn Chương Gặp Nhau</header>
+  <header>Kurayami – Viết Cảm Xúc</header>
   
-  <div id="reloadNotice">Web Kurayami – Tôi không nằm ngoài pháp luật. Internet không nằm ngoài pháp luật.</div>
+  <div id="reloadNotice">Web Kurayami – Tôi không nằm ngoài pháp luật.</div>
 
   <main>
     <div id="status"></div>
 
-    <h2>Viết Gì Cũng Được, Kurayami Luôn Ở Đây</h2>
-    <input id="title" type="text" placeholder="Tiêu đề cảm xúc của bạn..." oninput="kurayamiSpeak()" />
-    <textarea id="content" rows="8" placeholder="Hãy viết ra cảm xúc... Kurayami đang lắng nghe" oninput="kurayamiSpeak()"></textarea>
-    <button id="saveBtn" onclick="savePost()">Gửi Cho Kurayami</button>
-    <button onclick="clearAll()">Xóa Hết Ký Ức</button>
+    <h2>Viết Gì Đó, Kurayami Đang Nghe</h2>
+    <input id="title" type="text" placeholder="Tiêu đề..." oninput="kurayamiSpeak()" />
+    <textarea id="content" placeholder="Viết cảm xúc... Kurayami đang nghe" oninput="kurayamiSpeak()"></textarea>
+    <div style="display:flex; gap:5px;">
+      <button id="saveBtn" onclick="savePost()">Gửi</button>
+      <button onclick="clearAll()">Xóa Hết</button>
+    </div>
 
-    <hr style="border: 1px dashed #e1bee7; margin: 30px 0;">
+    <hr style="border: 1px dashed #e1bee7; margin: 20px 0;">
 
-    <h2>Kho Báu Của Bạn</h2>
+    <h2>Kho Cảm Xúc</h2>
     <div id="posts"></div>
   </main>
 
-  <!-- Kurayami Chat Bubble -->
   <div id="kurayamiChat">
-    <span class="kurayami-heart">Kurayami</span>
-    <span id="chatText">đang lắng nghe bạn...</span>
+    <span class="kurayami-heart">♥</span>
+    <span id="chatText">đang nghe...</span>
   </div>
 
-  <!-- Ban Notice -->
   <div id="banNotice">
-    <p style="font-size:2.5em; font-family:'Dancing Script',cursive; margin:0;">Kurayami Buồn</p>
-    <p id="banReason" style="margin:20px 0; font-size:1.2em;"></p>
+    <p style="font-size:2em; font-family:'Dancing Script',cursive; margin:0;">Kurayami Buồn</p>
+    <p id="banReason" style="margin:15px 0; font-size:1em;"></p>
     <div id="countdown"></div>
     <p id="deviceId"></p>
-    <p style="font-size:0.9em; margin-top:25px; line-height:1.6;">
-      Cho dù bạn cố ý hay cố tình, chúng tôi đều sẽ ban 24h.<br>
-      Không bypass, không fake VPN, không reload được.<br>
-      <span style="color:#ffeb3b;">Internet không nằm ngoài pháp luật.</span>
+    <p style="font-size:0.8em; margin-top:15px; line-height:1.5;">
+      Cố ý hay cố tình, cấm 24h.<br>
+      Không bypass, không fake VPN, không reload.<br>
+      <span style="color:#ffeb3b;">Internet không ngoài pháp luật.</span>
     </p>
   </div>
 
@@ -307,12 +340,12 @@
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
 
-    // === HÀM LOẠI BỎ DẤU TIẾNG VIỆT ===
+    // LOẠI BỎ DẤU TIẾNG VIỆT
     function removeDiacritics(str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
     }
 
-    // === TẠO DEVICE ID (Fingerprint) ===
+    // TẠO DEVICE ID
     let deviceId = localStorage.getItem('kurayami_device_id');
     if (!deviceId) {
       const canvas = document.createElement('canvas');
@@ -326,7 +359,7 @@
     }
     deviceIdEl.textContent = `Máy: ${deviceId}`;
 
-    // === DANH SÁCH TỪ KHÓA CẤM (CẢ CÓ DẤU & KHÔNG DẤU) ===
+    // TỪ KHÓA CẤM
     const bannedKeywords = {
       vnch: ['vnch', 'viet nam cong hoa', 'nguy quyen', 'nguy quan'],
       dcsvn: ['dcs vn', 'dang cong san viet nam', 'dang csvn'],
@@ -341,14 +374,14 @@
       giap: ['phan', 'boi', 'toi do', 'ke']
     };
 
-    // === TỪ KHÓA TÌNH YÊU ===
+    // TỪ KHÓA TÌNH YÊU
     const loveKeywords = ['yeu', 'thuong', 'nho', 'dau', 'tan vo', 'chia tay', 'co don', 'tinh yeu', 'buon', 'khoc'];
 
-    // === LƯU CẤM THEO MÁY ===
+    // LƯU CẤM
     const banKey = `kurayami_ban_${deviceId}`;
     let banData = JSON.parse(localStorage.getItem(banKey) || 'null');
 
-    // === KIỂM TRA CẤM ===
+    // KIỂM TRA CẤM
     function checkBan() {
       if (!banData) return;
       const now = Date.now();
@@ -365,18 +398,16 @@
     function showPermanentBan() {
       banReasonEl.innerHTML = `
         <div class="permanent-ban">
-          <p style="margin:0; font-size:1.3em;">CẤM VĨNH VIỄN</p>
-          <p>Bạn đã xúc phạm những điều thiêng liêng.</p>
-          <p>ĐCS VN, Bác Hồ, Bác Giáp, anh hùng liệt sĩ...</p>
+          <p style="margin:0;">CẤM VĨNH VIỄN</p>
+          <p>Xúc phạm nghiêm trọng.</p>
         </div>
         <div class="law-notice">
           Web Kurayami – Tôi không nằm ngoài pháp luật.<br>
-          Internet không nằm ngoài pháp luật.<br>
-          Không bypass, không fake VPN, không reload được.
+          Không bypass, không fake VPN, không reload.
         </div>
-        <p style="margin-top:20px;">
-          Muốn mở ban? Giải thích với Habato:<br>
-          <a href="https://www.facebook.com/share/1LU63c2hE6/" target="_blank" class="fb-link">https://www.facebook.com/share/1LU63c2hE6/</a>
+        <p style="margin-top:10px; font-size:0.8em;">
+          Muốn mở ban? Liên hệ Habato:<br>
+          <a href="https://www.facebook.com/share/1LU63c2hE6/" target="_blank" class="fb-link">facebook.com/share/1LU63c2hE6/</a>
         </p>
       `;
       banNotice.classList.add('show');
@@ -386,13 +417,10 @@
     function startCountdown(until, reason) {
       banReasonEl.innerHTML = `
         <div class="warning-banner">
-          <p style="margin:0; font-size:1.2em;">CẤM 24 GIỜ</p>
-          <p>Cho dù bạn cố ý hay cố tình, chúng tôi đều sẽ ban 24h.</p>
-          <p>Không bypass, không fake VPN, không reload được.</p>
+          <p style="margin:0;">CẤM 24 GIỜ</p>
+          <p>Cố ý hay cố tình, cấm 24h.</p>
+          <p>Không bypass, không fake VPN, không reload.</p>
         </div>
-        <p style="margin-top:15px; color:#ffeb3b;">
-          Internet không nằm ngoài pháp luật.
-        </p>
       `;
       banNotice.classList.add('show');
       disableAllInputs();
@@ -419,7 +447,7 @@
       document.querySelectorAll('button, input, textarea').forEach(el => el.disabled = true);
     }
 
-    // === PHÂN TÍCH NỘI DUNG (CẢ CÓ DẤU & KHÔNG DẤU) ===
+    // PHÂN TÍCH NỘI DUNG
     function analyzePost(title, content) {
       const originalText = `${title} ${content}`.toLowerCase();
       const cleanText = removeDiacritics(originalText);
@@ -428,7 +456,6 @@
       let isOffensive = false;
       const errors = [];
 
-      // Kiểm tra VNCH (có dấu & không dấu)
       for (const kw of bannedKeywords.vnch) {
         if (cleanText.includes(kw)) {
           isVNCHMention = true;
@@ -441,7 +468,6 @@
         }
       }
 
-      // Kiểm tra các đối tượng khác
       if (bannedKeywords.dcsvn.some(kw => cleanText.includes(kw))) {
         isOffensive = true;
         errors.push('Xúc phạm Đảng Cộng sản Việt Nam');
@@ -470,25 +496,11 @@
       return { isVNCHMention, isOffensive, errors };
     }
 
-    // === KURAYAMI NÓI CHUYỆN ===
+    // KURAYAMI NÓI
     const kurayamiMessages = {
-      default: [
-        "đang lắng nghe bạn...",
-        "ở đây mà",
-        "thích nghe bạn kể lắm",
-        "cảm xúc của bạn rất quý giá"
-      ],
-      love: [
-        "hiểu mà... Tình yêu thật khó",
-        "ôm bạn một cái nhé",
-        "dù ai làm bạn đau, Kurayami vẫn ở đây",
-        "sẽ vui cùng bạn khi bạn hạnh phúc"
-      ],
-      vnch: [
-        "Cho dù bạn cố ý hay cố tình, nhắc VNCH → ban 24h",
-        "Kurayami phải tuân thủ luật",
-        "Không bypass, không fake VPN, không reload được"
-      ]
+      default: ['đang nghe...', 'ở đây nè', 'kể đi nào', 'cảm xúc bạn quý giá'],
+      love: ['tình yêu khó quá ha', 'ôm cái nè', 'đừng buồn, có Kurayami đây', 'sẽ vui cùng bạn'],
+      vnch: ['Nhắc VNCH → cấm 24h nha', 'Kurayami phải tuân thủ luật', 'Không bypass được đâu']
     };
 
     function kurayamiSpeak() {
@@ -498,13 +510,13 @@
 
       if (loveKeywords.some(kw => cleanText.includes(kw))) {
         const msg = kurayamiMessages.love[Math.floor(Math.random() * kurayamiMessages.love.length)];
-        chatText.innerHTML = `${msg} <span class="kurayami-heart">Kurayami</span>`;
+        chatText.innerHTML = `${msg} <span class="kurayami-heart">♥</span>`;
         titleInput.classList.add('love-mode');
         contentInput.classList.add('love-mode');
         setTimeout(() => {
           titleInput.classList.remove('love-mode');
           contentInput.classList.remove('love-mode');
-        }, 3000);
+        }, 2000);
         return;
       }
 
@@ -513,34 +525,33 @@
         return;
       }
 
-      const msg = kurayamiMessages.default[Math.floor(Math.random() * kurayamiMessages.default.length)];
-      chatText.textContent = msg;
+      chatText.textContent = kurayamiMessages.default[Math.floor(Math.random() * kurayamiMessages.default.length)];
     }
 
-    // === LƯU BÀI ===
+    // LƯU BÀI
     function savePost() {
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
       if (!title || !content) {
-        chatText.textContent = "cần cả tiêu đề và nội dung cơ";
+        chatText.textContent = "cần tiêu đề và nội dung";
         return;
       }
 
       const analysis = analyzePost(title, content);
 
       if (analysis.isOffensive) {
-        const reason = `Xúc phạm nghiêm trọng: ${analysis.errors.join('; ')}`;
+        const reason = `Xúc phạm: ${analysis.errors.join('; ')}`;
         localStorage.setItem(banKey, JSON.stringify({ permanent: true, reason }));
         showPermanentBan();
         return;
       }
 
       if (analysis.isVNCHMention) {
-        const reason = 'Nhắc đến VNCH dù cố ý hay cố tình';
+        const reason = 'Nhắc VNCH dù cố ý hay cố tình';
         const until = Date.now() + 24 * 60 * 60 * 1000;
         localStorage.setItem(banKey, JSON.stringify({ until, reason, permanent: false }));
         startCountdown(until, reason);
-        statusDiv.innerHTML = '<div class="warning-banner">Đã nhắc VNCH → Cấm 24h. Không bypass được.</div>';
+        statusDiv.innerHTML = '<div class="warning-banner">Nhắc VNCH → Cấm 24h.</div>';
         return;
       }
 
@@ -551,10 +562,10 @@
       titleInput.value = '';
       contentInput.value = '';
       loadPosts();
-      chatText.innerHTML = `đã lưu bài của bạn! <span class="kurayami-heart">Kurayami</span>`;
+      chatText.innerHTML = `đã lưu! <span class="kurayami-heart">♥</span>`;
     }
 
-    // === HIỂN THỊ DANH SÁCH ===
+    // HIỂN THỊ BÀI
     function loadPosts() {
       postsDiv.innerHTML = '';
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
@@ -575,11 +586,11 @@
     function viewPost(id) {
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
       const post = posts.find(p => p.id === id);
-      if (post) alert(`Kurayami mở lại ký ức:\n\n${post.title}\n\n${post.content}`);
+      if (post) alert(`Ký ức:\n\n${post.title}\n\n${post.content}`);
     }
 
     function deletePost(id) {
-      if (confirm('Kurayami hỏi: Bạn chắc muốn xóa kỷ niệm này?')) {
+      if (confirm('Xóa ký ức này?')) {
         let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
         posts = posts.filter(p => p.id !== id);
         localStorage.setItem('kurayami_posts', JSON.stringify(posts));
@@ -588,13 +599,13 @@
     }
 
     function clearAll() {
-      if (confirm('Kurayami buồn lắm... Xóa hết ký ức sao?')) {
+      if (confirm('Xóa hết ký ức?')) {
         localStorage.removeItem('kurayami_posts');
         loadPosts();
       }
     }
 
-    // === KHỞI ĐỘNG ===
+    // KHỞI ĐỘNG
     checkBan();
     loadPosts();
     kurayamiSpeak();

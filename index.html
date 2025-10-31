@@ -121,7 +121,7 @@
       bottom: 20px;
       right: 20px;
       background: white;
-      padding: 15px;
+      padding: 15px 20px;
       border-radius: 50px;
       box-shadow: var(--shadow);
       font-size: 1.1em;
@@ -129,8 +129,11 @@
       font-weight: bold;
       animation: pulse 2s infinite;
       z-index: 100;
-      max-width: 280px;
+      max-width: 300px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     @keyframes pulse {
       0% { transform: scale(1); }
@@ -208,6 +211,22 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.2); }
     }
+    .warning-banner {
+      background: #fff3cd;
+      color: #856404;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 15px 0;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid #ffc107;
+      animation: shake 0.5s;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
   </style>
 </head>
 <body>
@@ -216,7 +235,7 @@
   <div id="reloadNotice">Kurayami bảo vệ giá trị. Vi phạm sẽ bị cấm vĩnh viễn!</div>
 
   <main>
-    <div id="status" style="display:none; padding:15px; background:#fff3e0; border-radius:12px; margin-bottom:20px; color:#e65100; font-weight:bold;"></div>
+    <div id="status"></div>
 
     <h2>Viết Gì Cũng Được, Kurayami Luôn Ở Đây</h2>
     <input id="title" type="text" placeholder="Tiêu đề cảm xúc của bạn..." oninput="kurayamiSpeak()" />
@@ -231,7 +250,10 @@
   </main>
 
   <!-- Kurayami Chat Bubble -->
-  <div id="kurayamiChat">Kurayami đang lắng nghe bạn...</div>
+  <div id="kurayamiChat">
+    <span class="kurayami-heart">Kurayami</span>
+    <span id="chatText">đang lắng nghe bạn...</span>
+  </div>
 
   <!-- Ban Notice -->
   <div id="banNotice">
@@ -254,10 +276,11 @@
     const saveBtn = document.getElementById('saveBtn');
     const statusDiv = document.getElementById('status');
     const kurayamiChat = document.getElementById('kurayamiChat');
+    const chatText = document.getElementById('chatText');
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
 
-    // === TẠO DEVICE ID ===
+    // === TẠO DEVICE ID (Fingerprint) ===
     let deviceId = localStorage.getItem('kurayami_device_id');
     if (!deviceId) {
       const canvas = document.createElement('canvas');
@@ -266,10 +289,16 @@
       ctx.font = '14px Arial';
       ctx.fillText('Kurayami Love ID', 2, 2);
       const data = canvas.toDataURL();
-      deviceId = btoa(data + navigator.userAgent + screen.width + screen.height).substring(0, 32);
+      deviceId = btoa(data + navigator.userAgent + screen.width + screen.height + navigator.language).substring(0, 32);
       localStorage.setItem('kurayami_device_id', deviceId);
     }
     deviceIdEl.textContent = `Máy: ${deviceId}`;
+
+    // === DANH SÁCH MÁY BỊ CẤM (CẬP NHẬT TỪ YÊU CẦU) ===
+    const bannedDevices = [
+      "ZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlW", // Máy bị cấm vĩnh viễn
+      // Thêm máy khác nếu cần
+    ];
 
     // === TỪ KHÓA CẤM ===
     const bannedKeywords = {
@@ -293,25 +322,41 @@
     const banKey = `kurayami_ban_${deviceId}`;
     let banData = JSON.parse(localStorage.getItem(banKey) || 'null');
 
+    // === KIỂM TRA MÁY BỊ CẤM TOÀN CẦU ===
+    function checkGlobalBan() {
+      if (bannedDevices.includes(deviceId)) {
+        localStorage.setItem(banKey, JSON.stringify({ permanent: true, reason: 'Máy này đã bị cấm vĩnh viễn bởi Kurayami.' }));
+        showPermanentBan();
+        return true;
+      }
+      return false;
+    }
+
     // === KURAYAMI NÓI CHUYỆN ===
     const kurayamiMessages = {
       default: [
-        "Kurayami đang lắng nghe bạn...",
-        "Hãy viết đi, Kurayami ở đây mà",
-        "Kurayami thích nghe bạn kể lắm",
-        "Cảm xúc của bạn rất quý giá với Kurayami"
+        "đang lắng nghe bạn...",
+        "ở đây mà",
+        "thích nghe bạn kể lắm",
+        "cảm xúc của bạn rất quý giá"
       ],
       love: [
-        "Kurayami hiểu mà... Tình yêu thật khó",
-        "Kurayami ôm bạn một cái nhé",
-        "Dù ai làm bạn đau, Kurayami vẫn ở đây",
-        "Kurayami sẽ vui cùng bạn khi bạn hạnh phúc",
-        "Bạn xứng đáng được yêu thương nhiều hơn thế"
+        "hiểu mà... Tình yêu thật khó",
+        "ôm bạn một cái nhé",
+        "dù ai làm bạn đau, Kurayami vẫn ở đây",
+        "sẽ vui cùng bạn khi bạn hạnh phúc",
+        "bạn xứng đáng được yêu thương nhiều hơn"
       ],
       vnch: [
-        "Kurayami nhắc nhỏ: Chỉ được nói VNCH một lần thôi nhé...",
-        "Kurayami không muốn cấm bạn, nhưng phải tuân thủ",
-        "Lần đầu nhắc VNCH → Kurayami cấm 24h để bạn suy nghĩ"
+        "nhắc nhỏ: Chỉ được nói VNCH một lần thôi nhé...",
+        "không muốn cấm bạn, nhưng phải tuân thủ",
+        "lần đầu nhắc VNCH → cấm 24h để bạn suy nghĩ"
+      ],
+      warning: [
+        "Máy này đang bị theo dõi vì vi phạm trước đó...",
+        "Kurayami đang cảnh cáo bạn từ máy khác!",
+        "Hành vi của bạn đã bị ghi nhận trên toàn hệ thống",
+        "Một lần nữa vi phạm → cấm vĩnh viễn ngay lập tức"
       ]
     };
 
@@ -320,10 +365,18 @@
       const content = contentInput.value.toLowerCase();
       const text = `${title} ${content}`;
 
-      // Kiểm tra tình yêu
+      // 1. Cảnh báo nếu máy từng bị cấm ở nơi khác
+      if (localStorage.getItem('kurayami_warned') === 'true') {
+        chatText.textContent = kurayamiMessages.warning[Math.floor(Math.random() * kurayamiMessages.warning.length)];
+        kurayamiChat.style.background = '#fff3cd';
+        kurayamiChat.style.color = '#856404';
+        return;
+      }
+
+      // 2. Viết về tình yêu
       if (loveKeywords.some(kw => text.includes(kw))) {
         const msg = kurayamiMessages.love[Math.floor(Math.random() * kurayamiMessages.love.length)];
-        kurayamiChat.innerHTML = `${msg} <span class="kurayami-heart">Kurayami</span>`;
+        chatText.innerHTML = `${msg} <span class="kurayami-heart">Kurayami</span>`;
         titleInput.classList.add('love-mode');
         contentInput.classList.add('love-mode');
         setTimeout(() => {
@@ -333,19 +386,20 @@
         return;
       }
 
-      // Kiểm tra VNCH
+      // 3. Nhắc VNCH
       if (bannedKeywords.vnch.some(kw => text.includes(kw))) {
-        kurayamiChat.innerHTML = kurayamiMessages.vnch[Math.floor(Math.random() * kurayamiMessages.vnch.length)];
+        chatText.textContent = kurayamiMessages.vnch[Math.floor(Math.random() * kurayamiMessages.vnch.length)];
         return;
       }
 
-      // Mặc định
+      // 4. Mặc định
       const msg = kurayamiMessages.default[Math.floor(Math.random() * kurayamiMessages.default.length)];
-      kurayamiChat.innerHTML = msg;
+      chatText.textContent = msg;
     }
 
     // === KIỂM TRA CẤM ===
     function checkBan() {
+      if (checkGlobalBan()) return;
       if (!banData) return;
       const now = Date.now();
       if (banData.permanent) {
@@ -452,7 +506,7 @@
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
       if (!title || !content) {
-        kurayamiChat.innerHTML = "Kurayami cần cả tiêu đề và nội dung cơ";
+        chatText.textContent = "cần cả tiêu đề và nội dung cơ";
         return;
       }
 
@@ -470,8 +524,7 @@
         const until = Date.now() + 24 * 60 * 60 * 1000;
         localStorage.setItem(banKey, JSON.stringify({ until, reason, permanent: false }));
         startCountdown(until, reason);
-        statusDiv.textContent = 'Kurayami đã cấm bạn 24h vì nhắc VNCH. Đừng nhắc lại nhé!';
-        statusDiv.style.display = 'block';
+        statusDiv.innerHTML = '<div class="warning-banner">Kurayami đã cấm bạn 24h vì nhắc VNCH. Đừng nhắc lại nhé!</div>';
         return;
       }
 
@@ -483,7 +536,7 @@
       titleInput.value = '';
       contentInput.value = '';
       loadPosts();
-      kurayamiChat.innerHTML = `Kurayami đã lưu bài của bạn! <span class="kurayami-heart">Kurayami</span>`;
+      chatText.innerHTML = `đã lưu bài của bạn! <span class="kurayami-heart">Kurayami</span>`;
     }
 
     // === HIỂN THỊ DANH SÁCH ===
@@ -529,7 +582,25 @@
     // === KHỞI ĐỘNG ===
     checkBan();
     loadPosts();
-    kurayamiSpeak();
+
+    // Cảnh báo nếu từng bị cấm ở máy khác
+    if (localStorage.getItem('kurayami_warned') !== 'true' && bannedDevices.includes(deviceId)) {
+      localStorage.setItem('kurayami_warned', 'true');
+    }
+
+    // Hiển thị cảnh báo nếu cần
+    if (localStorage.getItem('kurayami_warned') === 'true') {
+      statusDiv.innerHTML = `
+        <div class="warning-banner">
+          Kurayami CẢNH BÁO: Máy này đã bị cấm ở nơi khác!<br>
+          <strong>Device ID: ${deviceId}</strong><br>
+          Bất kỳ vi phạm nào → CẤM VĨNH VIỄN NGAY LẬP TỨC!
+        </div>
+      `;
+      kurayamiSpeak();
+    } else {
+      kurayamiSpeak();
+    }
 
     // Cập nhật lời nói khi gõ
     titleInput.addEventListener('input', kurayamiSpeak);

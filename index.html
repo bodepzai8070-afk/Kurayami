@@ -227,12 +227,38 @@
       25% { transform: translateX(-5px); }
       75% { transform: translateX(5px); }
     }
+    .permanent-ban {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 12px;
+      margin: 15px 0;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid #dc3545;
+      font-size: 1.1em;
+    }
+    .law-notice {
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 15px 0;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid #17a2b8;
+    }
+    .fb-link {
+      color: #1877f2;
+      text-decoration: underline;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <header>Kurayami – Nơi Tình Yêu & Văn Chương Gặp Nhau</header>
   
-  <div id="reloadNotice">Kurayami bảo vệ giá trị. Vi phạm sẽ bị cấm vĩnh viễn!</div>
+  <div id="reloadNotice">Web Kurayami – Tôi không nằm ngoài pháp luật. Internet không nằm ngoài pháp luật.</div>
 
   <main>
     <div id="status"></div>
@@ -261,9 +287,10 @@
     <p id="banReason" style="margin:20px 0; font-size:1.2em;"></p>
     <div id="countdown"></div>
     <p id="deviceId"></p>
-    <p style="font-size:0.9em; margin-top:25px; line-height:1.5;">
-      Kurayami không muốn cấm bạn... Nhưng phải bảo vệ giá trị.<br>
-      Không bypass được. Không fake VPN. Theo máy bạn.
+    <p style="font-size:0.9em; margin-top:25px; line-height:1.6;">
+      Cho dù bạn cố ý hay cố tình, chúng tôi đều sẽ ban 24h.<br>
+      Không bypass, không fake VPN, không reload được.<br>
+      <span style="color:#ffeb3b;">Internet không nằm ngoài pháp luật.</span>
     </p>
   </div>
 
@@ -280,6 +307,11 @@
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
 
+    // === HÀM LOẠI BỎ DẤU TIẾNG VIỆT ===
+    function removeDiacritics(str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    }
+
     // === TẠO DEVICE ID (Fingerprint) ===
     let deviceId = localStorage.getItem('kurayami_device_id');
     if (!deviceId) {
@@ -287,119 +319,37 @@
       const ctx = canvas.getContext('2d');
       ctx.textBaseline = 'top';
       ctx.font = '14px Arial';
-      ctx.fillText('Kurayami Love ID', 2, 2);
+      ctx.fillText('Kurayami Law ID', 2, 2);
       const data = canvas.toDataURL();
-      deviceId = btoa(data + navigator.userAgent + screen.width + screen.height + navigator.language).substring(0, 32);
+      deviceId = btoa(data + navigator.userAgent + screen.width + screen.height + navigator.language + Date.now()).substring(0, 32);
       localStorage.setItem('kurayami_device_id', deviceId);
     }
     deviceIdEl.textContent = `Máy: ${deviceId}`;
 
-    // === DANH SÁCH MÁY BỊ CẤM (CẬP NHẬT TỪ YÊU CẦU) ===
-    const bannedDevices = [
-      "ZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlW", // Máy bị cấm vĩnh viễn
-      // Thêm máy khác nếu cần
-    ];
-
-    // === TỪ KHÓA CẤM ===
+    // === DANH SÁCH TỪ KHÓA CẤM (CẢ CÓ DẤU & KHÔNG DẤU) ===
     const bannedKeywords = {
-      vnch: ['vnch', 'việt nam cộng hòa', 'ngụy quyền', 'ngụy quân'],
-      dcsvn: ['đcs vn', 'đảng cộng sản việt nam', 'đảng csvn'],
-      ho: ['bác hồ', 'hồ chí minh', 'bác h'],
-      giap: ['bác giáp', 'võ nguyên giáp'],
-      liet_si: /liệt\s*sĩ|anh\s*hùng.*(chửi|xúc phạm|đồ|kẻ)/i
+      vnch: ['vnch', 'viet nam cong hoa', 'nguy quyen', 'nguy quan'],
+      dcsvn: ['dcs vn', 'dang cong san viet nam', 'dang csvn'],
+      ho: ['bac ho', 'ho chi minh', 'bac h'],
+      giap: ['bac giap', 'vo nguyen giap'],
+      liet_si: /liet\s*si|anh\s*hung.*(chui|xuc pham|do|ke)/i
     };
 
     const offensiveWords = {
-      vnch: ['ngụy', 'phản động', 'bán nước', 'tay sai'],
-      ho: ['kẻ', 'đồ', 'giả', 'dối', 'phản', 'tội đồ'],
-      giap: ['phản', 'bội', 'tội đồ', 'kẻ']
+      vnch: ['nguy', 'phan dong', 'ban nuoc', 'tay sai'],
+      ho: ['ke', 'do', 'gia', 'doi', 'phan', 'toi do'],
+      giap: ['phan', 'boi', 'toi do', 'ke']
     };
 
     // === TỪ KHÓA TÌNH YÊU ===
-    const loveKeywords = ['yêu', 'thương', 'nhớ', 'đau', 'tan vỡ', 'chia tay', 'cô đơn', 'tình yêu', 'buồn', 'khóc'];
+    const loveKeywords = ['yeu', 'thuong', 'nho', 'dau', 'tan vo', 'chia tay', 'co don', 'tinh yeu', 'buon', 'khoc'];
 
     // === LƯU CẤM THEO MÁY ===
     const banKey = `kurayami_ban_${deviceId}`;
     let banData = JSON.parse(localStorage.getItem(banKey) || 'null');
 
-    // === KIỂM TRA MÁY BỊ CẤM TOÀN CẦU ===
-    function checkGlobalBan() {
-      if (bannedDevices.includes(deviceId)) {
-        localStorage.setItem(banKey, JSON.stringify({ permanent: true, reason: 'Máy này đã bị cấm vĩnh viễn bởi Kurayami.' }));
-        showPermanentBan();
-        return true;
-      }
-      return false;
-    }
-
-    // === KURAYAMI NÓI CHUYỆN ===
-    const kurayamiMessages = {
-      default: [
-        "đang lắng nghe bạn...",
-        "ở đây mà",
-        "thích nghe bạn kể lắm",
-        "cảm xúc của bạn rất quý giá"
-      ],
-      love: [
-        "hiểu mà... Tình yêu thật khó",
-        "ôm bạn một cái nhé",
-        "dù ai làm bạn đau, Kurayami vẫn ở đây",
-        "sẽ vui cùng bạn khi bạn hạnh phúc",
-        "bạn xứng đáng được yêu thương nhiều hơn"
-      ],
-      vnch: [
-        "nhắc nhỏ: Chỉ được nói VNCH một lần thôi nhé...",
-        "không muốn cấm bạn, nhưng phải tuân thủ",
-        "lần đầu nhắc VNCH → cấm 24h để bạn suy nghĩ"
-      ],
-      warning: [
-        "Máy này đang bị theo dõi vì vi phạm trước đó...",
-        "Kurayami đang cảnh cáo bạn từ máy khác!",
-        "Hành vi của bạn đã bị ghi nhận trên toàn hệ thống",
-        "Một lần nữa vi phạm → cấm vĩnh viễn ngay lập tức"
-      ]
-    };
-
-    function kurayamiSpeak() {
-      const title = titleInput.value.toLowerCase();
-      const content = contentInput.value.toLowerCase();
-      const text = `${title} ${content}`;
-
-      // 1. Cảnh báo nếu máy từng bị cấm ở nơi khác
-      if (localStorage.getItem('kurayami_warned') === 'true') {
-        chatText.textContent = kurayamiMessages.warning[Math.floor(Math.random() * kurayamiMessages.warning.length)];
-        kurayamiChat.style.background = '#fff3cd';
-        kurayamiChat.style.color = '#856404';
-        return;
-      }
-
-      // 2. Viết về tình yêu
-      if (loveKeywords.some(kw => text.includes(kw))) {
-        const msg = kurayamiMessages.love[Math.floor(Math.random() * kurayamiMessages.love.length)];
-        chatText.innerHTML = `${msg} <span class="kurayami-heart">Kurayami</span>`;
-        titleInput.classList.add('love-mode');
-        contentInput.classList.add('love-mode');
-        setTimeout(() => {
-          titleInput.classList.remove('love-mode');
-          contentInput.classList.remove('love-mode');
-        }, 3000);
-        return;
-      }
-
-      // 3. Nhắc VNCH
-      if (bannedKeywords.vnch.some(kw => text.includes(kw))) {
-        chatText.textContent = kurayamiMessages.vnch[Math.floor(Math.random() * kurayamiMessages.vnch.length)];
-        return;
-      }
-
-      // 4. Mặc định
-      const msg = kurayamiMessages.default[Math.floor(Math.random() * kurayamiMessages.default.length)];
-      chatText.textContent = msg;
-    }
-
     // === KIỂM TRA CẤM ===
     function checkBan() {
-      if (checkGlobalBan()) return;
       if (!banData) return;
       const now = Date.now();
       if (banData.permanent) {
@@ -414,10 +364,20 @@
 
     function showPermanentBan() {
       banReasonEl.innerHTML = `
-        <p style="font-size:1.4em; margin:15px 0;">Kurayami rất buồn...</p>
-        <p>Bạn đã xúc phạm những điều thiêng liêng.</p>
-        <p>ĐCS VN, Bác Hồ, Bác Giáp, các anh hùng liệt sĩ...<br>
-        Kurayami không thể tha thứ.</p>
+        <div class="permanent-ban">
+          <p style="margin:0; font-size:1.3em;">CẤM VĨNH VIỄN</p>
+          <p>Bạn đã xúc phạm những điều thiêng liêng.</p>
+          <p>ĐCS VN, Bác Hồ, Bác Giáp, anh hùng liệt sĩ...</p>
+        </div>
+        <div class="law-notice">
+          Web Kurayami – Tôi không nằm ngoài pháp luật.<br>
+          Internet không nằm ngoài pháp luật.<br>
+          Không bypass, không fake VPN, không reload được.
+        </div>
+        <p style="margin-top:20px;">
+          Muốn mở ban? Giải thích với Habato:<br>
+          <a href="https://www.facebook.com/share/1LU63c2hE6/" target="_blank" class="fb-link">https://www.facebook.com/share/1LU63c2hE6/</a>
+        </p>
       `;
       banNotice.classList.add('show');
       disableAllInputs();
@@ -425,9 +385,14 @@
 
     function startCountdown(until, reason) {
       banReasonEl.innerHTML = `
-        <p style="font-size:1.3em;">Kurayami cấm bạn 24 giờ...</p>
-        <p>${reason}</p>
-        <p>Khi nào bạn hiểu, Kurayami sẽ mở cửa lại</p>
+        <div class="warning-banner">
+          <p style="margin:0; font-size:1.2em;">CẤM 24 GIỜ</p>
+          <p>Cho dù bạn cố ý hay cố tình, chúng tôi đều sẽ ban 24h.</p>
+          <p>Không bypass, không fake VPN, không reload được.</p>
+        </div>
+        <p style="margin-top:15px; color:#ffeb3b;">
+          Internet không nằm ngoài pháp luật.
+        </p>
       `;
       banNotice.classList.add('show');
       disableAllInputs();
@@ -454,18 +419,21 @@
       document.querySelectorAll('button, input, textarea').forEach(el => el.disabled = true);
     }
 
-    // === PHÂN TÍCH NỘI DUNG ===
+    // === PHÂN TÍCH NỘI DUNG (CẢ CÓ DẤU & KHÔNG DẤU) ===
     function analyzePost(title, content) {
-      const text = `${title} ${content}`.toLowerCase();
+      const originalText = `${title} ${content}`.toLowerCase();
+      const cleanText = removeDiacritics(originalText);
+
       let isVNCHMention = false;
       let isOffensive = false;
       const errors = [];
 
+      // Kiểm tra VNCH (có dấu & không dấu)
       for (const kw of bannedKeywords.vnch) {
-        if (text.includes(kw)) {
+        if (cleanText.includes(kw)) {
           isVNCHMention = true;
           for (const bad of offensiveWords.vnch) {
-            if (text.includes(bad)) {
+            if (cleanText.includes(bad)) {
               isOffensive = true;
               errors.push(`Xúc phạm VNCH với từ: "${bad}"`);
             }
@@ -473,32 +441,80 @@
         }
       }
 
-      if (bannedKeywords.dcsvn.some(kw => text.includes(kw))) {
+      // Kiểm tra các đối tượng khác
+      if (bannedKeywords.dcsvn.some(kw => cleanText.includes(kw))) {
         isOffensive = true;
         errors.push('Xúc phạm Đảng Cộng sản Việt Nam');
       }
-      if (bannedKeywords.ho.some(kw => text.includes(kw))) {
+      if (bannedKeywords.ho.some(kw => cleanText.includes(kw))) {
         for (const bad of offensiveWords.ho) {
-          if (text.includes(bad)) {
+          if (cleanText.includes(bad)) {
             isOffensive = true;
             errors.push(`Xúc phạm Bác Hồ với từ: "${bad}"`);
           }
         }
       }
-      if (bannedKeywords.giap.some(kw => text.includes(kw))) {
+      if (bannedKeywords.giap.some(kw => cleanText.includes(kw))) {
         for (const bad of offensiveWords.giap) {
-          if (text.includes(bad)) {
+          if (cleanText.includes(bad)) {
             isOffensive = true;
             errors.push(`Xúc phạm Đại tướng Võ Nguyên Giáp với từ: "${bad}"`);
           }
         }
       }
-      if (bannedKeywords.liet_si.test(text)) {
+      if (bannedKeywords.liet_si.test(cleanText)) {
         isOffensive = true;
         errors.push('Xúc phạm các anh hùng liệt sĩ');
       }
 
       return { isVNCHMention, isOffensive, errors };
+    }
+
+    // === KURAYAMI NÓI CHUYỆN ===
+    const kurayamiMessages = {
+      default: [
+        "đang lắng nghe bạn...",
+        "ở đây mà",
+        "thích nghe bạn kể lắm",
+        "cảm xúc của bạn rất quý giá"
+      ],
+      love: [
+        "hiểu mà... Tình yêu thật khó",
+        "ôm bạn một cái nhé",
+        "dù ai làm bạn đau, Kurayami vẫn ở đây",
+        "sẽ vui cùng bạn khi bạn hạnh phúc"
+      ],
+      vnch: [
+        "Cho dù bạn cố ý hay cố tình, nhắc VNCH → ban 24h",
+        "Kurayami phải tuân thủ luật",
+        "Không bypass, không fake VPN, không reload được"
+      ]
+    };
+
+    function kurayamiSpeak() {
+      const title = titleInput.value.toLowerCase();
+      const content = contentInput.value.toLowerCase();
+      const cleanText = removeDiacritics(`${title} ${content}`);
+
+      if (loveKeywords.some(kw => cleanText.includes(kw))) {
+        const msg = kurayamiMessages.love[Math.floor(Math.random() * kurayamiMessages.love.length)];
+        chatText.innerHTML = `${msg} <span class="kurayami-heart">Kurayami</span>`;
+        titleInput.classList.add('love-mode');
+        contentInput.classList.add('love-mode');
+        setTimeout(() => {
+          titleInput.classList.remove('love-mode');
+          contentInput.classList.remove('love-mode');
+        }, 3000);
+        return;
+      }
+
+      if (bannedKeywords.vnch.some(kw => cleanText.includes(kw))) {
+        chatText.textContent = kurayamiMessages.vnch[Math.floor(Math.random() * kurayamiMessages.vnch.length)];
+        return;
+      }
+
+      const msg = kurayamiMessages.default[Math.floor(Math.random() * kurayamiMessages.default.length)];
+      chatText.textContent = msg;
     }
 
     // === LƯU BÀI ===
@@ -513,22 +529,21 @@
       const analysis = analyzePost(title, content);
 
       if (analysis.isOffensive) {
-        const reason = `Kurayami phát hiện: ${analysis.errors.join('; ')}`;
+        const reason = `Xúc phạm nghiêm trọng: ${analysis.errors.join('; ')}`;
         localStorage.setItem(banKey, JSON.stringify({ permanent: true, reason }));
         showPermanentBan();
         return;
       }
 
       if (analysis.isVNCHMention) {
-        const reason = 'Bạn đã nhắc đến VNCH. Kurayami cho phép 1 lần duy nhất.';
+        const reason = 'Nhắc đến VNCH dù cố ý hay cố tình';
         const until = Date.now() + 24 * 60 * 60 * 1000;
         localStorage.setItem(banKey, JSON.stringify({ until, reason, permanent: false }));
         startCountdown(until, reason);
-        statusDiv.innerHTML = '<div class="warning-banner">Kurayami đã cấm bạn 24h vì nhắc VNCH. Đừng nhắc lại nhé!</div>';
+        statusDiv.innerHTML = '<div class="warning-banner">Đã nhắc VNCH → Cấm 24h. Không bypass được.</div>';
         return;
       }
 
-      // LƯU BÀI
       const post = { id: Date.now(), title, content };
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
       posts.push(post);
@@ -582,31 +597,11 @@
     // === KHỞI ĐỘNG ===
     checkBan();
     loadPosts();
+    kurayamiSpeak();
 
-    // Cảnh báo nếu từng bị cấm ở máy khác
-    if (localStorage.getItem('kurayami_warned') !== 'true' && bannedDevices.includes(deviceId)) {
-      localStorage.setItem('kurayami_warned', 'true');
-    }
-
-    // Hiển thị cảnh báo nếu cần
-    if (localStorage.getItem('kurayami_warned') === 'true') {
-      statusDiv.innerHTML = `
-        <div class="warning-banner">
-          Kurayami CẢNH BÁO: Máy này đã bị cấm ở nơi khác!<br>
-          <strong>Device ID: ${deviceId}</strong><br>
-          Bất kỳ vi phạm nào → CẤM VĨNH VIỄN NGAY LẬP TỨC!
-        </div>
-      `;
-      kurayamiSpeak();
-    } else {
-      kurayamiSpeak();
-    }
-
-    // Cập nhật lời nói khi gõ
     titleInput.addEventListener('input', kurayamiSpeak);
     contentInput.addEventListener('input', kurayamiSpeak);
 
-    // Thông báo reload
     window.addEventListener('load', () => {
       document.getElementById('reloadNotice').style.display = 'block';
     });

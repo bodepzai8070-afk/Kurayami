@@ -315,7 +315,7 @@
       z-index: 9999;
       display: none;
     }
-    #authModal.show {
+   #authModal.show {
       display: flex;
     }
     .auth-box {
@@ -497,8 +497,7 @@
       localStorage.setItem(DEVICE_KEY, deviceId);
     }
     deviceIdEl.textContent = `Máy: ${deviceId}`;
-
-    // === LOẠI BỎ DẤU TIẾNG VIỆT ===
+// === LOẠI BỎ DẤU TIẾNG VIỆT ===
     function removeDiacritics(str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
     }
@@ -786,7 +785,7 @@
       navigator.clipboard.writeText(shareLink.textContent).then(() => {
         chatText.textContent = "Đã copy link!";
       });
-}
+    }
 
     function shareToFB() {
       if (!currentPost || currentPost.mode !== 'public') return;
@@ -936,6 +935,7 @@
               Chia sẻ lên Facebook
             </button>
           </div>
+        `;
       }
     }
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thơ & Điểm – AI Bảo Vệ</title>
+  <title>Thơ & sử</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -259,6 +259,9 @@
       <span style="color:#ffeb3b; font-weight:bold;">Khóa màn hình 10 phút!</span>
     </p>
     <div id="lockCountdown">10:00</div>
+    <p id="lockTimeInfo" style="font-size:0.9em; margin:15px 0; line-height:1.6;">
+      Thời gian cấm: <span id="lockStart"></span> → <span id="lockEnd"></span>
+    </p>
     <p style="font-size:0.9em; line-height:1.6; margin-top:20px;">
       Không reload, không fake, không bypass.<br>
       <span style="color:#fff;">AI biết hết Penguin</span>
@@ -270,6 +273,8 @@
     const lockScreen = document.getElementById('lockScreen');
     const lockCountdown = document.getElementById('lockCountdown');
     const fakeNameEl = document.getElementById('fakeName');
+    const lockStartEl = document.getElementById('lockStart');
+    const lockEndEl = document.getElementById('lockEnd');
     const saveBtn = document.getElementById('saveBtn');
     const statusDiv = document.getElementById('status');
     const chatText = document.getElementById('chatText');
@@ -310,9 +315,16 @@
     // === TÊN CẤM ===
     const bannedNames = ['kurayami', 'kirada', 'admin', 'ai', 'habato', 'owner', 'mod'];
 
-    // === KHÓA MÀN HÌNH 10 PHÚT ===
+    // === KHÓA MÀN HÌNH 10 PHÚT + LƯU THỜI GIAN ===
     function lockScreenFor10Min(fakeName) {
+      const now = Date.now();
+      const until = now + 600000; // 10 phút
+      const startTime = new Date(now).toLocaleString('vi-VN');
+      const endTime = new Date(until).toLocaleString('vi-VN');
+
       fakeNameEl.textContent = fakeName;
+      lockStartEl.textContent = startTime;
+      lockEndEl.textContent = endTime;
       lockScreen.classList.add('show');
       document.querySelectorAll('button, input, textarea, select').forEach(el => el.disabled = true);
 
@@ -331,12 +343,23 @@
         }
       }, 1000);
 
-      localStorage.setItem('ai_lock', JSON.stringify({ until: Date.now() + 600000, name: fakeName }));
+      // LƯU THỜI GIAN CẤM
+      localStorage.setItem('ai_lock', JSON.stringify({
+        until,
+        name: fakeName,
+        start: now,
+        end: until,
+        startStr: startTime,
+        endStr: endTime
+      }));
     }
 
     // === KIỂM TRA KHÓA KHI LOAD ===
     const lockData = JSON.parse(localStorage.getItem('ai_lock') || 'null');
     if (lockData && lockData.until > Date.now()) {
+      fakeNameEl.textContent = lockData.name;
+      lockStartEl.textContent = lockData.startStr;
+      lockEndEl.textContent = lockData.endStr;
       lockScreenFor10Min(lockData.name);
     }
 

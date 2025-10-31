@@ -327,7 +327,7 @@
       return Math.min(100, Math.max(0, score));
     }
 
-    // === CẬP NHẬT CHAT (KHÔNG HIỆN ĐIỂM KHI VIẾT) ===
+    // === CẬP NHẬT CHAT ===
     function updateChat() {
       const to = toInput.value.trim();
       const content = contentInput.value.trim();
@@ -435,6 +435,7 @@
             AI chấm: <span class="score">${post.score}/100</span>
           </div>
           <p style="white-space:pre-wrap; margin:8px 0; font-size:0.95em; font-style:italic;">${post.content}</p>
+          <p style="color:#888; font-size:0.8em; margin-top:10px;">Gửi từ <strong>${post.author}</strong></p>
           <div class="btn-group">
             <button onclick="deletePost('${post.id}')">Xóa</button>
             <button class="share-fb-btn" onclick="shareSingleToFB('${post.id}')">Chia sẻ FB</button>
@@ -492,7 +493,7 @@
               AI chấm: <strong style="color:#e91e63;">${letter.score}/100</strong>
             </div>
             <div class="content">${letter.content}</div>
-            <p style="color:#888; font-size:0.8em; margin-top:20px;">Gửi từ Kurayami</p>
+            <p style="color:#888; font-size:0.8em; margin-top:20px;">Gửi từ <strong>${letter.author}</strong></p>
             <button class="fb-btn" onclick="shareSingleToFB('${letter.id}')">
               Chia sẻ lên Facebook
             </button>

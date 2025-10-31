@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kurayami – Thư Tình (AI Chấm Sau Lưu)</title>
+  <title id="pageTitle">Kurayami – Thư Tình</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -183,11 +183,6 @@
       font-size: 2em;
       margin-bottom: 10px;
     }
-    .share-page h2 {
-      color: var(--kurayami-dark);
-      font-size: 1.5em;
-      margin: 15px 0;
-    }
     .share-page .meta {
       font-size: 0.95em;
       color: #6a1b9a;
@@ -227,14 +222,13 @@
       #kurayamiChat { padding: 8px 12px; font-size: 0.85em; max-width: 70%; }
       .share-page { padding: 15px; }
       .share-page h1 { font-size: 1.8em; }
-      .share-page h2 { font-size: 1.3em; }
     }
   </style>
 </head>
 <body>
-  <header>Kurayami – Thư Tình (AI Chấm Sau Lưu)</header>
+  <header id="mainHeader">Kurayami – Thư Tình</header>
 
-  <!-- BANNER CẤM -->
+  <!-- BANNER CẤM (KHÔNG LINK FB) -->
   <div id="permanentBan" class="permanent-ban">
     <p><strong>BẠN ĐÃ BỊ CẤM VĨNH VIỄN!</strong></p>
     <p>Chỉ <strong>Kurayami</strong> & <strong>Kirada</strong> được dùng tên này.</p>
@@ -279,6 +273,8 @@
   <script>
     const postsDiv = document.getElementById('posts');
     const mainContent = document.getElementById('mainContent');
+    const mainHeader = document.getElementById('mainHeader');
+    const pageTitle = document.getElementById('pageTitle');
     const chatText = document.getElementById('chatText');
     const authorInput = document.getElementById('author');
     const toInput = document.getElementById('to');
@@ -331,7 +327,7 @@
       return Math.min(100, Math.max(0, score));
     }
 
-    // === CẬP NHẬT CHAT ===
+    // === CẬP NHẬT CHAT (KHÔNG HIỆN ĐIỂM KHI VIẾT) ===
     function updateChat() {
       const to = toInput.value.trim();
       const content = contentInput.value.trim();
@@ -413,8 +409,7 @@
       if (!currentPost || currentPost.mode !== 'public') return;
       const url = generateShareLink(currentPost.id);
       const fbShareText = encodeURIComponent(
-        `*Gửi ${currentPost.to}*\n` +
-        `Từ: *${currentPost.author}*\n` +
+        `*${currentPost.author} gửi ${currentPost.to}*\n` +
         `AI chấm: *${currentPost.score}/100*\n\n` +
         `"${currentPost.content.split('\n')[0].substring(0, 120)}..."\n\n` +
         `Đọc toàn bộ: ${url}\n\n` +
@@ -435,9 +430,8 @@
         const div = document.createElement('div');
         div.className = 'post';
         div.innerHTML = `
-          <h3>Gửi ${post.to}</h3>
+          <h3>${post.author} gửi ${post.to}</h3>
           <div class="post-meta">
-            Từ: <strong>${post.author}</strong> | 
             AI chấm: <span class="score">${post.score}/100</span>
           </div>
           <p style="white-space:pre-wrap; margin:8px 0; font-size:0.95em; font-style:italic;">${post.content}</p>
@@ -456,8 +450,7 @@
       if (!post) return;
       const url = generateShareLink(id);
       const fbShareText = encodeURIComponent(
-        `*Gửi ${post.to}*\n` +
-        `Từ: *${post.author}*\n` +
+        `*${post.author} gửi ${post.to}*\n` +
         `AI chấm: *${post.score}/100*\n\n` +
         `"${post.content.split('\n')[0].substring(0, 120)}..."\n\n` +
         `Đọc toàn bộ: ${url}\n\n` +
@@ -490,12 +483,12 @@
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
       const letter = posts.find(p => p.id === letterId && p.mode === 'public');
       if (letter) {
+        const titleText = `${letter.author} gửi ${letter.to}`;
+        pageTitle.textContent = titleText;
         document.body.innerHTML = `
           <div class="share-page">
-            <h1>Kurayami Thư Tình</h1>
-            <h2>Gửi ${letter.to}</h2>
+            <h1>${titleText}</h1>
             <div class="meta">
-              Từ: <strong>${letter.author}</strong> | 
               AI chấm: <strong style="color:#e91e63;">${letter.score}/100</strong>
             </div>
             <div class="content">${letter.content}</div>
@@ -505,7 +498,6 @@
             </button>
           </div>
         `;
-        // Gắn lại hàm chia sẻ
         window.shareSingleToFB = shareSingleToFB;
       }
     }

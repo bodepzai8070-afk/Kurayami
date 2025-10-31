@@ -165,8 +165,6 @@
       display: none;
     }
     .permanent-ban.show { display: block; }
-
-    /* TRANG CHIA SẺ RIÊNG */
     .share-page {
       max-width: 600px;
       margin: 20px auto;
@@ -209,7 +207,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     @media (max-width: 600px) {
       header { font-size: 1.5em; padding: 12px; }
       main { padding: 10px; }
@@ -226,42 +223,38 @@
   </style>
 </head>
 <body>
-  <header id="mainHeader">Kurayami – Thư Tình</header>
+  <header>Kurayami – Thư Tình</header>
 
-  <!-- BANNER CẤM (KHÔNG LINK FB) -->
   <div id="permanentBan" class="permanent-ban">
     <p><strong>BẠN ĐÃ BỊ CẤM VĨNH VIỄN!</strong></p>
     <p>Chỉ <strong>Kurayami</strong> & <strong>Kirada</strong> được dùng tên này.</p>
   </div>
 
   <main id="mainContent">
-    <div id="status"></div>
-
     <h2>Viết Thư Gửi Người Mình Yêu</h2>
-    <input id="author" type="text" placeholder="Tên bạn (hoặc bút danh)..." oninput="checkAuthor()" />
-    <input id="to" type="text" placeholder="Gửi đến: Ai đó đặc biệt..." oninput="updateChat()" />
-    <textarea id="content" placeholder="Viết lá thư của bạn... Kurayami đang đọc" oninput="updateChat()"></textarea>
+    <input id="author" type="text" placeholder="Tên bạn..." oninput="checkAuthor()" />
+    <input id="to" type="text" placeholder="Gửi đến..." oninput="updateChat()" />
+    <textarea id="content" placeholder="Viết lá thư..." oninput="updateChat()"></textarea>
     
     <select id="sendMode" onchange="updateChat()">
       <option value="private">Chỉ mình tôi</option>
-      <option value="public">Gửi công khai (AI chấm điểm)</option>
+      <option value="public">Công khai (AI chấm)</option>
     </select>
 
     <div id="shareSection" class="share-section" style="display:none;">
-      <p><strong>Link chia sẻ (điểm đã lưu):</strong></p>
+      <p><strong>Link chia sẻ:</strong></p>
       <div id="shareLink" class="share-link">Đang tạo...</div>
       <button class="copy-btn" onclick="copyLink()">Copy</button>
-      <button class="share-fb-btn" onclick="shareToFB()">Chia sẻ lên Facebook</button>
+      <button class="share-fb-btn" onclick="shareToFB()">Chia sẻ FB</button>
     </div>
 
     <div style="display:flex; gap:5px; flex-wrap:wrap;">
-      <button id="saveBtn" onclick="savePost()">Gửi Thư</button>
+      <button onclick="savePost()">Gửi Thư</button>
       <button onclick="clearAll()">Xóa Hết</button>
     </div>
 
     <hr style="border: 1px dashed #e1bee7; margin: 20px 0;">
-
-    <h2>Kho Thư Tình (AI Chấm Điểm)</h2>
+    <h2>Kho Thư Tình</h2>
     <div id="posts"></div>
   </main>
 
@@ -271,10 +264,10 @@
   </div>
 
   <script>
+    // THAY BẰNG RAW URL CỦA GIST BẠN (từ BƯỚC 1)
+    const GIST_URL = 'https://gist.githubusercontent.com/[username]/[gist-id]/raw/kurayami-posts.json';
+
     const postsDiv = document.getElementById('posts');
-    const mainContent = document.getElementById('mainContent');
-    const mainHeader = document.getElementById('mainHeader');
-    const pageTitle = document.getElementById('pageTitle');
     const chatText = document.getElementById('chatText');
     const authorInput = document.getElementById('author');
     const toInput = document.getElementById('to');
@@ -285,34 +278,58 @@
     const permanentBan = document.getElementById('permanentBan');
 
     let currentPost = null;
-    const BANNED_KEY = 'kurayami_permanent_ban';
+    let posts = [];
 
-    // === KIỂM TRA BAN ===
-    if (localStorage.getItem(BANNED_KEY) === 'true') {
-      showPermanentBan();
+    // Load dữ liệu từ Gist
+    async function loadFromGist() {
+      try {
+        const res = await fetch(GIST_URL + '?t=' + Date.now());
+        if (res.ok) {
+          posts = await res.json();
+        } else {
+          posts = [];
+        }
+      } catch (e) {
+        posts = [];
+      }
+      loadPosts();
     }
 
-    function showPermanentBan() {
+    // Lưu dữ liệu lên Gist (dùng PUT, cần token nếu private - tạm dùng public gist)
+    async function saveToGist(newPosts) {
+      try {
+        await fetch(GIST_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newPosts)
+        });
+      } catch (e) {
+        // Fallback: Lưu local nếu lỗi
+        localStorage.setItem('kurayami_posts', JSON.stringify(newPosts));
+        alert('Lưu local (không sync). Tạo public Gist để sync!');
+      }
+    }
+
+    // KIỂM TRA BAN
+    if (localStorage.getItem('kurayami_permanent_ban') === 'true') {
       permanentBan.classList.add('show');
       document.querySelectorAll('input, textarea, select, button').forEach(el => el.disabled = true);
       chatText.textContent = "Bị cấm vĩnh viễn.";
     }
 
-    // === KIỂM TRA TÊN ===
     function checkAuthor() {
       const name = authorInput.value.trim().toLowerCase();
-      if (name === 'kurayami' || name === 'kirada') return true;
       if (name.includes('kurayami') || name.includes('kirada')) {
         chatText.textContent = "Tên cấm. Bị cấm vĩnh viễn.";
-        localStorage.setItem(BANNED_KEY, 'true');
-        setTimeout(showPermanentBan, 1500);
+        localStorage.setItem('kurayami_permanent_ban', 'true');
+        setTimeout(() => permanentBan.classList.add('show'), 1500);
         authorInput.value = '';
         return false;
       }
       return true;
     }
 
-    // === AI CHẤM ĐIỂM ===
+    // AI CHẤM ĐIỂM
     function scoreLetter(to, content, author) {
       let score = 0;
       const text = `${author} ${to} ${content}`.toLowerCase();
@@ -327,16 +344,14 @@
       return Math.min(100, Math.max(0, score));
     }
 
-    // === CẬP NHẬT CHAT ===
+    // CẬP NHẬT CHAT
     function updateChat() {
       const to = toInput.value.trim();
       const content = contentInput.value.trim();
-
       if (!to || !content) {
         chatText.textContent = "Nhập người nhận và nội dung.";
         return;
       }
-
       if (sendMode.value === 'public') {
         chatText.textContent = "Bấm 'Gửi Thư' để AI chấm điểm.";
       } else {
@@ -344,11 +359,9 @@
       }
     }
 
-    // === LƯU THƯ + CHẤM SAU KHI BẤM ===
-    function savePost() {
-      if (localStorage.getItem(BANNED_KEY) === 'true') return;
+    // LƯU THƯ
+    async function savePost() {
       if (!checkAuthor()) return;
-
       const author = authorInput.value.trim() || 'Ẩn danh';
       const to = toInput.value.trim() || 'Ai đó...';
       const content = contentInput.value.trim();
@@ -370,15 +383,11 @@
         timestamp: Date.now()
       };
 
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
       posts.push(post);
-      localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+      await saveToGist(posts);
 
       currentPost = post;
-
-      authorInput.value = '';
-      toInput.value = '';
-      contentInput.value = '';
+      authorInput.value = toInput.value = contentInput.value = '';
       shareSection.style.display = 'none';
 
       if (mode === 'public') {
@@ -393,10 +402,9 @@
       loadPosts();
     }
 
-    // === LINK CHIA SẺ ===
+    // LINK CHIA SẺ
     function generateShareLink(id) {
-      const base = window.location.href.split('?')[0];
-      return `${base}?letter=${id}`;
+      return `${window.location.href.split('?')[0]}?letter=${id}`;
     }
 
     function copyLink() {
@@ -415,14 +423,12 @@
         `Đọc toàn bộ: ${url}\n\n` +
         `Kurayami – Thư Tình`
       );
-      const fbURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`;
-      window.open(fbURL, '_blank', 'width=600,height=400');
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`, '_blank', 'width=600,height=400');
     }
 
-    // === HIỂN THỊ KHO ===
+    // HIỂN THỊ KHO
     function loadPosts() {
       postsDiv.innerHTML = '';
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
       const publicPosts = posts.filter(p => p.mode === 'public');
       publicPosts.sort((a,b) => b.score - a.score);
 
@@ -446,8 +452,7 @@
     }
 
     function shareSingleToFB(id) {
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
-      const post = posts.find(p => p.id === id && p.mode === 'public');
+      const post = posts.find(p => p.id === id);
       if (!post) return;
       const url = generateShareLink(id);
       const fbShareText = encodeURIComponent(
@@ -457,35 +462,33 @@
         `Đọc toàn bộ: ${url}\n\n` +
         `Kurayami – Thư Tình`
       );
-      const fbURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`;
-      window.open(fbURL, '_blank', 'width=600,height=400');
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`, '_blank', 'width=600,height=400');
     }
 
-    function deletePost(id) {
+    async function deletePost(id) {
       if (confirm('Xóa lá thư này?')) {
-        let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
         posts = posts.filter(p => p.id !== id);
-        localStorage.setItem('kurayami_posts', JSON.stringify(posts));
+        await saveToGist(posts);
         loadPosts();
       }
     }
 
-    function clearAll() {
+    async function clearAll() {
       if (confirm('Xóa hết thư?')) {
-        localStorage.removeItem('kurayami_posts');
+        posts = [];
+        await saveToGist(posts);
         loadPosts();
       }
     }
 
-    // === TRANG CHIA SẺ KHI CLICK LINK ===
+    // TRANG CHIA SẺ
     const urlParams = new URLSearchParams(window.location.search);
     const letterId = urlParams.get('letter');
     if (letterId) {
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
-      const letter = posts.find(p => p.id === letterId && p.mode === 'public');
+      const letter = posts.find(p => p.id === letterId);
       if (letter) {
         const titleText = `${letter.author} gửi ${letter.to}`;
-        pageTitle.textContent = titleText;
+        document.title = titleText;
         document.body.innerHTML = `
           <div class="share-page">
             <h1>${titleText}</h1>
@@ -499,15 +502,12 @@
             </button>
           </div>
         `;
-        window.shareSingleToFB = shareSingleToFB;
       }
     }
 
-    // === KHỞI ĐỘNG ===
-    if (!letterId) {
-      loadPosts();
-      updateChat();
-    }
+    // KHỞI ĐỘNG
+    loadFromGist();
+    updateChat();
 
     authorInput.addEventListener('input', () => { checkAuthor(); updateChat(); });
     toInput.addEventListener('input', updateChat);

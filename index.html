@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kurayami – Thơ & Cảm Xúc</title>
+  <title>Kurayami – Thư Tình (AI Chấm Sau Lưu)</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -12,19 +12,14 @@
       --kurayami-light: #f3e5f5;
       --kurayami-dark: #4a148c;
       --shadow: 0 4px 15px rgba(106, 27, 154, 0.2);
-      --danger: #dc3545;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #ede7f6, #f3e5f5);
+      background: linear-gradient(135deg, #fde7f9, #f3e5f5);
       color: #333;
       font-size: 16px;
-      line-height: 1.5;
+      line-height: 1.6;
       overflow-x: hidden;
     }
     header {
@@ -36,10 +31,7 @@
       font-size: 1.8em;
       box-shadow: var(--shadow);
     }
-    main {
-      max-width: 100%;
-      padding: 15px;
-    }
+    main { max-width: 100%; padding: 15px; }
     h2 {
       color: var(--kurayami-purple);
       font-family: 'Dancing Script', cursive;
@@ -63,8 +55,9 @@
       box-shadow: 0 0 0 3px rgba(236, 64, 122, 0.2);
     }
     textarea {
-      min-height: 120px;
+      min-height: 160px;
       resize: vertical;
+      font-family: 'Roboto', sans-serif;
     }
     button {
       background: linear-gradient(to right, var(--kurayami-purple), var(--kurayami-pink));
@@ -79,15 +72,8 @@
       box-shadow: var(--shadow);
       transition: all 0.3s;
     }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(106, 27, 154, 0.4);
-    }
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(106, 27, 154, 0.4); }
+    button:disabled { background: #ccc; cursor: not-allowed; transform: none; }
     .post {
       background: var(--kurayami-light);
       padding: 12px;
@@ -96,9 +82,7 @@
       border-left: 4px solid var(--kurayami-pink);
       transition: transform 0.2s;
     }
-    .post:hover {
-      transform: translateX(3px);
-    }
+    .post:hover { transform: translateX(3px); }
     .post h3 {
       margin: 0 0 8px;
       color: var(--kurayami-dark);
@@ -139,10 +123,7 @@
       z-index: 100;
       animation: pulse 2s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
     .share-section {
       background: #fff;
       padding: 12px;
@@ -165,16 +146,11 @@
       font-size: 0.8em;
       padding: 6px 10px;
     }
-    .delete-date {
-      font-size: 0.85em;
-      color: #6a1b9a;
-    }
     .share-fb-btn {
       background: #1877f2;
       color: white;
       font-weight: bold;
     }
-    /* BANNER CẤM VĨNH VIỄN */
     .permanent-ban {
       background: #f8d7da;
       color: #721c24;
@@ -188,93 +164,72 @@
       box-shadow: var(--shadow);
       display: none;
     }
-    .permanent-ban.show {
-      display: block;
-    }
-    .fb-link-ban {
-      color: #1877f2;
-      text-decoration: underline;
-      font-weight: bold;
-    }
+    .permanent-ban.show { display: block; }
     @media (max-width: 600px) {
       header { font-size: 1.5em; padding: 12px; }
       main { padding: 10px; }
       h2 { font-size: 1.3em; }
       input, textarea, select { padding: 8px; font-size: 0.9em; }
-      textarea { min-height: 100px; }
+      textarea { min-height: 120px; }
       button { padding: 8px 12px; font-size: 0.85em; }
       .post { padding: 10px; }
       .post h3 { font-size: 1.1em; }
       #kurayamiChat { padding: 8px 12px; font-size: 0.85em; max-width: 70%; }
-      .permanent-ban { font-size: 0.9em; padding: 10px; }
     }
   </style>
 </head>
 <body>
-  <header>Kurayami – Thơ & Cảm Xúc</header>
+  <header>Kurayami – Thư Tình (AI Chấm Sau Lưu)</header>
 
-  <!-- BANNER CẤM VĨNH VIỄN - CHỈ HIỆN KHI BỊ CẤM -->
+  <!-- BANNER CẤM (KHÔNG CÓ LINK FB) -->
   <div id="permanentBan" class="permanent-ban">
     <p><strong>BẠN ĐÃ BỊ CẤM VĨNH VIỄN!</strong></p>
     <p>Chỉ <strong>Kurayami</strong> & <strong>Kirada</strong> được dùng tên này.</p>
-    <p>Liên hệ: <a href="https://www.facebook.com/share/1CkGe5kgSu/" target="_blank" class="fb-link-ban">fb.com/share/1CkGe5kgSu/</a></p>
   </div>
 
   <main>
     <div id="status"></div>
 
-    <h2>Viết Thơ</h2>
-    <input id="author" type="text" placeholder="Tên bạn (thật hoặc giả)..." oninput="checkAuthor()" />
-    <input id="title" type="text" placeholder="Tiêu đề thơ..." oninput="kurayamiSpeak()" />
-    <textarea id="content" placeholder="Viết thơ... Kurayami đang nghe" oninput="kurayamiSpeak()"></textarea>
+    <h2>Viết Thư Gửi Người Mình Yêu</h2>
+    <input id="author" type="text" placeholder="Tên bạn (hoặc bút danh)..." oninput="checkAuthor()" />
+    <input id="to" type="text" placeholder="Gửi đến: Ai đó đặc biệt..." oninput="updateChat()" />
+    <textarea id="content" placeholder="Viết lá thư của bạn... Kurayami đang đọc" oninput="updateChat()"></textarea>
     
-    <select id="sendMode">
+    <select id="sendMode" onchange="updateChat()">
       <option value="private">Chỉ mình tôi</option>
-      <option value="public">Gửi công khai (có điểm)</option>
+      <option value="public">Gửi công khai (AI chấm điểm)</option>
     </select>
 
-    <div id="deleteDateSection" style="margin:8px 0;">
-      <label class="delete-date">
-        <input type="checkbox" id="autoDelete" />
-        Tự động xóa sau ngày:
-      </label>
-      <input type="date" id="deleteDate" disabled style="margin-top:4px;" />
-    </div>
-
     <div id="shareSection" class="share-section" style="display:none;">
-      <p><strong>Link chia sẻ:</strong></p>
+      <p><strong>Link chia sẻ (điểm đã lưu):</strong></p>
       <div id="shareLink" class="share-link">Đang tạo...</div>
       <button class="copy-btn" onclick="copyLink()">Copy</button>
       <button class="share-fb-btn" onclick="shareToFB()">Chia sẻ lên Facebook</button>
     </div>
 
     <div style="display:flex; gap:5px; flex-wrap:wrap;">
-      <button id="saveBtn" onclick="savePost()">Gửi / Lưu</button>
+      <button id="saveBtn" onclick="savePost()">Gửi Thư</button>
       <button onclick="clearAll()">Xóa Hết</button>
     </div>
 
     <hr style="border: 1px dashed #e1bee7; margin: 20px 0;">
 
-    <h2>Kho Thơ (Sắp xếp theo điểm)</h2>
+    <h2>Kho Thư Tình (AI Chấm Điểm)</h2>
     <div id="posts"></div>
   </main>
 
   <div id="kurayamiChat">
     <span style="color:#ec407a;">Kurayami</span>
-    <span id="chatText">đang lắng nghe...</span>
+    <span id="chatText">đang đọc...</span>
   </div>
 
   <script>
     const postsDiv = document.getElementById('posts');
-    const saveBtn = document.getElementById('saveBtn');
-    const statusDiv = document.getElementById('status');
     const chatText = document.getElementById('chatText');
     const authorInput = document.getElementById('author');
-    const titleInput = document.getElementById('title');
+    const toInput = document.getElementById('to');
     const contentInput = document.getElementById('content');
     const sendMode = document.getElementById('sendMode');
-    const autoDelete = document.getElementById('autoDelete');
-    const deleteDate = document.getElementById('deleteDate');
     const shareSection = document.getElementById('shareSection');
     const shareLink = document.getElementById('shareLink');
     const permanentBan = document.getElementById('permanentBan');
@@ -282,7 +237,7 @@
     let currentPost = null;
     const BANNED_KEY = 'kurayami_permanent_ban';
 
-    // === KIỂM TRA BAN VĨNH VIỄN ===
+    // === KIỂM TRA BAN ===
     if (localStorage.getItem(BANNED_KEY) === 'true') {
       showPermanentBan();
     }
@@ -290,18 +245,15 @@
     function showPermanentBan() {
       permanentBan.classList.add('show');
       document.querySelectorAll('input, textarea, select, button').forEach(el => el.disabled = true);
-      saveBtn.disabled = true;
-      chatText.textContent = "Bạn đã bị cấm vĩnh viễn!";
+      chatText.textContent = "Bị cấm vĩnh viễn.";
     }
 
     // === KIỂM TRA TÊN ===
     function checkAuthor() {
       const name = authorInput.value.trim().toLowerCase();
-      if (name === 'kurayami' || name === 'kirada') {
-        return true;
-      }
+      if (name === 'kurayami' || name === 'kirada') return true;
       if (name.includes('kurayami') || name.includes('kirada')) {
-        chatText.textContent = "Tên cấm! Bị cấm vĩnh viễn!";
+        chatText.textContent = "Tên cấm. Bị cấm vĩnh viễn.";
         localStorage.setItem(BANNED_KEY, 'true');
         setTimeout(showPermanentBan, 1500);
         authorInput.value = '';
@@ -310,61 +262,62 @@
       return true;
     }
 
-    // === CHẤM ĐIỂM THƠ ===
-    function scorePoem(title, content, author) {
+    // === AI CHẤM ĐIỂM ===
+    function scoreLetter(to, content, author) {
       let score = 0;
-      const text = `${author} ${title} ${content}`.toLowerCase();
+      const text = `${author} ${to} ${content}`.toLowerCase();
       const lines = content.split('\n').filter(l => l.trim());
-      if (lines.length >= 4) score += 25;
-      if (lines.length >= 8) score += 15;
-      const goodWords = ['yêu','thương','nhớ','đau','trăng','mưa','gió','mây','hồn','tim','lòng','nước mắt','nụ cười'];
-      const count = goodWords.filter(w => text.includes(w)).length;
-      score += count * 6;
-      if (content.length > 100 && content.length < 600) score += 20;
+      if (lines.length >= 3) score += 20;
+      if (lines.length >= 6) score += 15;
+      const loveWords = ['yêu','thương','nhớ','ôm','hôn','mãi','mãi mãi','trái tim','hạnh phúc','cảm ơn','xin lỗi','đợi','gặp','mơ','giấc mơ','nụ cười','nước mắt','tay','mắt','môi','em','anh','tôi','bạn'];
+      const count = loveWords.filter(w => text.includes(w)).length;
+      score += count * 5;
+      if (content.length > 120 && content.length < 800) score += 25;
       if (author.trim() && author.trim() !== 'Ẩn danh') score += 10;
-      return Math.min(100, score);
+      return Math.min(100, Math.max(0, score));
     }
 
-    // === TỰ ĐỘNG XÓA ===
-    function checkAutoDelete() {
-      const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
-      const now = new Date().setHours(0,0,0,0);
-      const updated = posts.filter(post => {
-        if (post.deleteDate) {
-          const del = new Date(post.deleteDate).setHours(0,0,0,0);
-          return del > now;
-        }
-        return true;
-      });
-      if (updated.length !== posts.length) {
-        localStorage.setItem('kurayami_posts', JSON.stringify(updated));
-      }
-    }
-
-    // === LƯU BÀI ===
-    function savePost() {
-      if (localStorage.getItem(BANNED_KEY) === 'true') return;
-
-      if (!checkAuthor()) return;
-
-      const author = authorInput.value.trim() || 'Ẩn danh';
-      const title = titleInput.value.trim();
+    // === CẬP NHẬT CHAT (KHÔNG CHẤM ĐIỂM KHI VIẾT) ===
+    function updateChat() {
+      const to = toInput.value.trim();
       const content = contentInput.value.trim();
-      const mode = sendMode.value;
-      const delDate = autoDelete.checked ? deleteDate.value : null;
 
-      if (!title || !content) {
-        chatText.textContent = "Cần tiêu đề và nội dung";
+      if (!to || !content) {
+        chatText.textContent = "Nhập người nhận và nội dung.";
         return;
       }
 
-      const score = mode === 'public' ? scorePoem(title, content, author) : 0;
+      if (sendMode.value === 'public') {
+        chatText.textContent = "Bấm 'Gửi Thư' để AI chấm điểm.";
+      } else {
+        chatText.textContent = "Chế độ riêng.";
+      }
+    }
+
+    // === LƯU THƯ + CHẤM ĐIỂM SAU KHI BẤM ===
+    function savePost() {
+      if (localStorage.getItem(BANNED_KEY) === 'true') return;
+      if (!checkAuthor()) return;
+
+      const author = authorInput.value.trim() || 'Ẩn danh';
+      const to = toInput.value.trim() || 'Ai đó...';
+      const content = contentInput.value.trim();
+      const mode = sendMode.value;
+
+      if (!to || !content) {
+        chatText.textContent = "Thiếu người nhận hoặc nội dung.";
+        return;
+      }
+
+      let score = 0;
+      if (mode === 'public') {
+        score = scoreLetter(to, content, author); // AI CHẤM TẠI ĐÂY
+      }
 
       const post = {
         id: Date.now() + Math.random().toString(36).substr(2,9),
-        author, title, content, mode, score,
-        timestamp: Date.now(),
-        deleteDate: delDate
+        author, to, content, mode, score,
+        timestamp: Date.now()
       };
 
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
@@ -374,19 +327,17 @@
       currentPost = post;
 
       authorInput.value = '';
-      titleInput.value = '';
+      toInput.value = '';
       contentInput.value = '';
-      autoDelete.checked = false;
-      deleteDate.disabled = true;
       shareSection.style.display = 'none';
 
       if (mode === 'public') {
         const link = generateShareLink(post.id);
         shareLink.textContent = link;
         shareSection.style.display = 'block';
-        chatText.textContent = `Điểm: ${score}/100!`;
+        chatText.textContent = `AI chấm: ${score}/100 (đã lưu).`;
       } else {
-        chatText.textContent = "Đã lưu riêng!";
+        chatText.textContent = "Đã lưu riêng.";
       }
 
       loadPosts();
@@ -395,12 +346,12 @@
     // === LINK CHIA SẺ ===
     function generateShareLink(id) {
       const base = window.location.href.split('?')[0];
-      return `${base}?poem=${id}`;
+      return `${base}?letter=${id}`;
     }
 
     function copyLink() {
       navigator.clipboard.writeText(shareLink.textContent).then(() => {
-        chatText.textContent = "Đã copy link!";
+        chatText.textContent = "Đã copy.";
       });
     }
 
@@ -408,27 +359,20 @@
     function shareToFB() {
       if (!currentPost || currentPost.mode !== 'public') return;
       const url = generateShareLink(currentPost.id);
-      const title = currentPost.title;
-      const author = currentPost.author;
-      const contentPreview = currentPost.content.split('\n')[0].substring(0, 100) + (currentPost.content.length > 100 ? '...' : '');
-      const score = currentPost.score;
-
       const fbShareText = encodeURIComponent(
-        `*${title}*\n` +
-        `Tác giả: *${author}*\n` +
-        `Điểm: *${score}/100*\n\n` +
-        `"${contentPreview}"\n\n` +
-        `Đọc tại: ${url}\n\n` +
-        `Kurayami – Thơ & Cảm Xúc`
+        `*Gửi ${currentPost.to}*\n` +
+        `Từ: *${currentPost.author}*\n` +
+        `AI chấm: *${currentPost.score}/100*\n\n` +
+        `"${currentPost.content.split('\n')[0].substring(0, 120)}..."\n\n` +
+        `Đọc toàn bộ: ${url}\n\n` +
+        `Kurayami – Thư Tình`
       );
-
       const fbURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`;
       window.open(fbURL, '_blank', 'width=600,height=400');
     }
 
-    // === HIỂN THỊ BÀI ===
+    // === HIỂN THỊ ===
     function loadPosts() {
-      checkAutoDelete();
       postsDiv.innerHTML = '';
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
       const publicPosts = posts.filter(p => p.mode === 'public');
@@ -437,14 +381,13 @@
       publicPosts.forEach(post => {
         const div = document.createElement('div');
         div.className = 'post';
-        const delInfo = post.deleteDate ? `<br><small class="delete-date">Xóa: ${new Date(post.deleteDate).toLocaleDateString('vi-VN')}</small>` : '';
         div.innerHTML = `
-          <h3>${post.title}</h3>
+          <h3>Gửi ${post.to}</h3>
           <div class="post-meta">
-            Tác giả: <strong>${post.author}</strong> | 
-            Điểm: <span class="score">${post.score}/100</span>${delInfo}
+            Từ: <strong>${post.author}</strong> | 
+            AI chấm: <span class="score">${post.score}/100</span>
           </div>
-          <p style="white-space:pre-wrap; margin:8px 0; font-size:0.95em;">${post.content}</p>
+          <p style="white-space:pre-wrap; margin:8px 0; font-size:0.95em; font-style:italic;">${post.content}</p>
           <div class="btn-group">
             <button onclick="deletePost('${post.id}')">Xóa</button>
             <button class="share-fb-btn" onclick="shareSingleToFB('${post.id}')">Chia sẻ FB</button>
@@ -458,28 +401,21 @@
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
       const post = posts.find(p => p.id === id && p.mode === 'public');
       if (!post) return;
-
       const url = generateShareLink(id);
-      const title = post.title;
-      const author = post.author;
-      const contentPreview = post.content.split('\n')[0].substring(0, 100) + (post.content.length > 100 ? '...' : '');
-      const score = post.score;
-
       const fbShareText = encodeURIComponent(
-        `*${title}*\n` +
-        `Tác giả: *${author}*\n` +
-        `Điểm: *${score}/100*\n\n` +
-        `"${contentPreview}"\n\n` +
-        `Đọc tại: ${url}\n\n` +
-        `Kurayami – Thơ & Cảm Xúc`
+        `*Gửi ${post.to}*\n` +
+        `Từ: *${post.author}*\n` +
+        `AI chấm: *${post.score}/100*\n\n` +
+        `"${post.content.split('\n')[0].substring(0, 120)}..."\n\n` +
+        `Đọc toàn bộ: ${url}\n\n` +
+        `Kurayami – Thư Tình`
       );
-
       const fbURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${fbShareText}`;
       window.open(fbURL, '_blank', 'width=600,height=400');
     }
 
     function deletePost(id) {
-      if (confirm('Xóa bài này?')) {
+      if (confirm('Xóa lá thư này?')) {
         let posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
         posts = posts.filter(p => p.id !== id);
         localStorage.setItem('kurayami_posts', JSON.stringify(posts));
@@ -488,39 +424,32 @@
     }
 
     function clearAll() {
-      if (confirm('Xóa hết bài?')) {
+      if (confirm('Xóa hết thư?')) {
         localStorage.removeItem('kurayami_posts');
         loadPosts();
       }
     }
 
-    // === KURAYAMI NÓI ===
-    function kurayamiSpeak() {
-      const text = `${authorInput.value} ${titleInput.value} ${contentInput.value}`.toLowerCase();
-      if (text.includes('yeu') || text.includes('thuong')) {
-        chatText.textContent = "Thơ tình hay!";
-        return;
-      }
-      chatText.textContent = "Viết tiếp đi...";
-    }
-
     // === XỬ LÝ LINK CHIA SẺ ===
     const urlParams = new URLSearchParams(window.location.search);
-    const poemId = urlParams.get('poem');
-    if (poemId) {
+    const letterId = urlParams.get('letter');
+    if (letterId) {
       const posts = JSON.parse(localStorage.getItem('kurayami_posts') || '[]');
-      const poem = posts.find(p => p.id === poemId && p.mode === 'public');
-      if (poem) {
+      const letter = posts.find(p => p.id === letterId && p.mode === 'public');
+      if (letter) {
         document.body.innerHTML = `
           <div style="padding:20px; text-align:center; max-width:600px; margin:auto; font-family:Roboto;">
-            <h1 style="color:#6a1b9a; font-family:'Dancing Script',cursive; font-size:2em;">Kurayami Thơ</h1>
-            <h2 style="color:#4a148c; margin:15px 0;">${poem.title}</h2>
-            <p style="font-size:0.9em; color:#6a1b9a;">Tác giả: <strong>${poem.author}</strong> | Điểm: <strong style="color:#e91e63;">${poem.score}/100</strong></p>
-            <p style="white-space:pre-wrap; font-size:1.1em; margin:25px 0; line-height:1.8; text-align:left;">
-              ${poem.content}
+            <h1 style="color:#6a1b9a; font-family:'Dancing Script',cursive; font-size:2em;">Kurayami Thư Tình</h1>
+            <h2 style="color:#4a148c; margin:15px 0;">Gửi ${letter.to}</h2>
+            <p style="font-size:0.9em; color:#6a1b9a;">
+              Từ: <strong>${letter.author}</strong> | 
+              AI chấm: <strong style="color:#e91e63;">${letter.score}/100</strong>
+            </p>
+            <p style="white-space:pre-wrap; font-size:1.1em; margin:25px 0; line-height:1.9; text-align:left; font-style:italic;">
+              ${letter.content}
             </p>
             <p style="color:#888; font-size:0.8em;">Gửi từ Kurayami</p>
-            <button onclick="shareSingleToFB('${poem.id}')" style="margin-top:15px; background:#1877f2; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+            <button onclick="shareSingleToFB('${letter.id}')" style="margin-top:15px; background:#1877f2; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
               Chia sẻ lên Facebook
             </button>
           </div>
@@ -528,19 +457,14 @@
       }
     }
 
-    // === SỰ KIỆN ===
-    autoDelete.addEventListener('change', () => {
-      deleteDate.disabled = !autoDelete.checked;
-    });
-
     // === KHỞI ĐỘNG ===
-    setInterval(checkAutoDelete, 3600000);
     loadPosts();
-    kurayamiSpeak();
+    updateChat(); // Khởi tạo trạng thái ban đầu
 
-    authorInput.addEventListener('input', () => { checkAuthor(); kurayamiSpeak(); });
-    titleInput.addEventListener('input', kurayamiSpeak);
-    contentInput.addEventListener('input', kurayamiSpeak);
+    authorInput.addEventListener('input', () => { checkAuthor(); updateChat(); });
+    toInput.addEventListener('input', updateChat);
+    contentInput.addEventListener('input', updateChat);
+    sendMode.addEventListener('change', updateChat);
   </script>
 </body>
 </html>

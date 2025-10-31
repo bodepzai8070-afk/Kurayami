@@ -304,6 +304,47 @@
       font-weight: bold;
       word-break: break-all;
     }
+    /* MẬT KHẨU CHO TÊN RIÊNG */
+    #authModal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      display: none;
+    }
+    #authModal.show {
+      display: flex;
+    }
+    .auth-box {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .auth-box h3 {
+      color: var(--kurayami-purple);
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8em;
+      margin-bottom: 15px;
+    }
+    .auth-box input {
+      margin: 10px 0;
+    }
+    .auth-box button {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .auth-error {
+      color: #dc3545;
+      font-size: 0.85em;
+      margin-top: 5px;
+    }
     @media (max-width: 600px) {
       header { font-size: 1.5em; padding: 12px; }
       main { padding: 10px; }
@@ -319,21 +360,25 @@
       #countdown { font-size: 1.8em; }
       #deviceId { font-size: 0.65em; }
       .warning-banner, .law-notice, .success-banner { font-size: 0.85em; padding: 8px; }
+      .auth-box { padding: 20px; }
+      .auth-box h3 { font-size: 1.6em; }
     }
   </style>
 </head>
 <body>
   <header>Kurayami – Viết Cảm Xúc</header>
 
-  <!-- BANNER CẤM VĨNH VIỄN (CHỈ HIỆN KHI BỊ CẤM) -->
+  <!-- BANNER CẤM VĨNH VIỄN -->
   <div id="permanentBan" class="permanent-ban">
     <p><strong>BẠN ĐÃ BỊ CẤM VĨNH VIỄN!</strong></p>
     <p>Chỉ <strong>Kurayami</strong> & <strong>Kirada</strong> được dùng tên này.</p>
     <p>Liên hệ: <a href="https://www.facebook.com/share/1CkGe5kgSu/" target="_blank" class="fb-link-ban">fb.com/share/1CkGe5kgSu/</a></p>
   </div>
 
-  <!-- BANNER CẢNH BÁO PHÁP LUẬT -->
-  <div id="reloadNotice">Web Kurayami – Tôi không nằm ngoài pháp luật.</div>
+  <!-- BANNER TUÂN THỦ PHÁP LUẬT -->
+  <div id="reloadNotice">
+    Web Kurayami – Tôi tuân thủ đúng quy định của pháp luật Việt Nam.
+  </div>
 
   <main>
     <div id="status"></div>
@@ -392,6 +437,18 @@
     </p>
   </div>
 
+  <!-- MODAL NHẬP MẬT KHẨU CHO TÊN RIÊNG -->
+  <div id="authModal">
+    <div class="auth-box">
+      <h3>Xác Thực Tên</h3>
+      <p id="authName" style="margin:10px 0; font-weight:bold; color:var(--kurayami-purple);"></p>
+      <input id="authPassword" type="password" placeholder="Nhập mật khẩu..." />
+      <div id="authError" class="auth-error"></div>
+      <button onclick="verifyPassword()">Xác Nhận</button>
+      <button style="background:#dc3545;" onclick="cancelAuth()">Hủy</button>
+    </div>
+  </div>
+
   <script>
     // === BIẾN TOÀN CỤC ===
     const postsDiv = document.getElementById('posts');
@@ -411,10 +468,21 @@
     const banReasonEl = document.getElementById('banReason');
     const countdownEl = document.getElementById('countdown');
     const deviceIdEl = document.getElementById('deviceId');
+    const authModal = document.getElementById('authModal');
+    const authName = document.getElementById('authName');
+    const authPassword = document.getElementById('authPassword');
+    const authError = document.getElementById('authError');
 
     let currentPost = null;
     const BANNED_KEY = 'kurayami_permanent_ban';
     const DEVICE_KEY = 'kurayami_device_id';
+    let pendingAuthor = null; // Tên đang chờ xác thực
+
+    // === MẬT KHẨU HỢP LỆ ===
+    const VALID_PASSWORDS = {
+      'kurayami': 'kurayamireal',
+      'kirada': 'moracute'
+    };
 
     // === TẠO DEVICE ID ===
     let deviceId = localStorage.getItem(DEVICE_KEY);
@@ -438,22 +506,22 @@
     // === TỪ KHÓA CẤM ===
     const bannedKeywords = {
       vnch: ['vnch', 'viet nam cong hoa', 'nguy quyen', 'nguy quan'],
-      dcsvn: ['dcs vn', 'dang cong san viet nam', 'dang csvn'],
-      ho: ['bac ho', 'ho chi minh', 'bac h'],
-      giap: ['bac giap', 'vo nguyen giap'],
-      liet_si: /liet\s*si|anh\s*hung.*(chui|xuc pham|do|ke)/i
+      dcsvn: ['dcs vn', 'dang cong san viet nam', 'dang csvn', 'dang cs', 'dang cong san'],
+      ho: ['bac ho', 'ho chi minh', 'bac h', 'chu tich ho'],
+      giap: ['bac giap', 'vo nguyen giap', 'dai tuong giap'],
+      liet_si: /liet\s*si|anh\s*hung|chien\s*si|bo\s*doi.*(chui|xuc pham|do|ke|trieu tap)/i
     };
 
     const offensiveWords = {
-      vnch: ['nguy', 'phan dong', 'ban nuoc', 'tay sai'],
-      ho: ['ke', 'do', 'gia', 'doi', 'phan', 'toi do'],
-      giap: ['phan', 'boi', 'toi do', 'ke']
+      vnch: ['nguy', 'phan dong', 'ban nuoc', 'tay sai', 'khen', 'tot', 'hay', 'ung ho', 'cham biem', 'che', 'xuc pham'],
+      dcsvn: ['do', 'toi do', 'toi loi', 'xuc pham', 'che', 'cham biem', 'khen qua', 'tuyen truyen'],
+      ho: ['ke', 'do', 'gia', 'doi', 'phan', 'toi do', 'xuc pham', 'che', 'cham biem'],
+      giap: ['phan', 'boi', 'toi do', 'ke', 'xuc pham', 'che', 'cham biem'],
+      liet_si: ['do', 'ke', 'xuc pham', 'che', 'cham biem', 'khen qua']
     };
 
-    // === TỪ KHÓA TÌNH YÊU ===
     const loveKeywords = ['yeu', 'thuong', 'nho', 'dau', 'tan vo', 'chia tay', 'co don', 'tinh yeu', 'buon', 'khoc'];
 
-    // === LƯU CẤM ===
     const banKey = `kurayami_ban_${deviceId}`;
     let banData = JSON.parse(localStorage.getItem(banKey) || 'null');
 
@@ -487,13 +555,15 @@
       banReasonEl.innerHTML = `
         <div class="warning-banner">
           <p style="margin:0;">CẤM 24 GIỜ</p>
-          <p>Cố ý hay cố tình, cấm 24h.</p>
+          <p>${reason}</p>
           <p>Không bypass, không fake VPN, không reload.</p>
+        </div>
+        <div class="law-notice">
+          Web Kurayami tuân thủ đúng quy định pháp luật Việt Nam.
         </div>
       `;
       banNotice.classList.add('show');
       disableAllInputs();
-
       const interval = setInterval(() => {
         const remaining = Math.max(0, Math.floor((until - Date.now()) / 1000));
         if (remaining === 0) {
@@ -516,6 +586,44 @@
       document.querySelectorAll('button, input, textarea, select').forEach(el => el.disabled = true);
     }
 
+    // === XÁC THỰC MẬT KHẨU ===
+    function checkAuthor() {
+      const name = authorInput.value.trim().toLowerCase();
+      if (name === 'kurayami' || name === 'kirada') {
+        pendingAuthor = name;
+        authName.textContent = `Xác thực cho: ${name.charAt(0).toUpperCase() + name.slice(1)}`;
+        authPassword.value = '';
+        authError.textContent = '';
+        authModal.classList.add('show');
+        authorInput.value = ''; // Xóa tạm
+        return false;
+      }
+      return true;
+    }
+
+    function verifyPassword() {
+      const pass = authPassword.value.trim();
+      if (VALID_PASSWORDS[pendingAuthor] === pass) {
+        authorInput.value = pendingAuthor.charAt(0).toUpperCase() + pendingAuthor.slice(1);
+        authModal.classList.remove('show');
+        chatText.innerHTML = `Chào ${authorInput.value}! <span class="kurayami-heart">Heart</span>`;
+        pendingAuthor = null;
+      } else {
+        authError.textContent = 'Mật khẩu sai! Cấm vĩnh viễn!';
+        setTimeout(() => {
+          localStorage.setItem(BANNED_KEY, 'true');
+          showPermanentBan();
+        }, 1500);
+      }
+    }
+
+    function cancelAuth() {
+      authorInput.value = '';
+      authModal.classList.remove('show');
+      pendingAuthor = null;
+      chatText.textContent = 'Tên không hợp lệ!';
+    }
+
     // === PHÂN TÍCH NỘI DUNG ===
     function analyzePost(title, content) {
       const originalText = `${title} ${content}`.toLowerCase();
@@ -531,54 +639,45 @@
           for (const bad of offensiveWords.vnch) {
             if (cleanText.includes(bad)) {
               isOffensive = true;
-              errors.push(`Xúc phạm VNCH với từ: "${bad}"`);
+              errors.push(`Cấm nhắc VNCH: "${bad}"`);
             }
           }
         }
       }
 
       if (bannedKeywords.dcsvn.some(kw => cleanText.includes(kw))) {
-        isOffensive = true;
-        errors.push('Xúc phạm Đảng Cộng sản Việt Nam');
+        for (const bad of offensiveWords.dcsvn) {
+          if (cleanText.includes(bad)) {
+            isOffensive = true;
+            errors.push(`Xúc phạm Đảng: "${bad}"`);
+          }
+        }
       }
+
       if (bannedKeywords.ho.some(kw => cleanText.includes(kw))) {
         for (const bad of offensiveWords.ho) {
           if (cleanText.includes(bad)) {
             isOffensive = true;
-            errors.push(`Xúc phạm Bác Hồ với từ: "${bad}"`);
+            errors.push(`Xúc phạm Bác Hồ: "${bad}"`);
           }
         }
       }
+
       if (bannedKeywords.giap.some(kw => cleanText.includes(kw))) {
         for (const bad of offensiveWords.giap) {
           if (cleanText.includes(bad)) {
             isOffensive = true;
-            errors.push(`Xúc phạm Đại tướng Võ Nguyên Giáp với từ: "${bad}"`);
+            errors.push(`Xúc phạm Đại tướng Giáp: "${bad}"`);
           }
         }
       }
+
       if (bannedKeywords.liet_si.test(cleanText)) {
         isOffensive = true;
-        errors.push('Xúc phạm các anh hùng liệt sĩ');
+        errors.push('Xúc phạm liệt sĩ / chiến sĩ');
       }
 
       return { isVNCHMention, isOffensive, errors };
-    }
-
-    // === KIỂM TRA TÊN ===
-    function checkAuthor() {
-      const name = authorInput.value.trim().toLowerCase();
-      if (name === 'kurayami' || name === 'kirada') {
-        return true;
-      }
-      if (name.includes('kurayami') || name.includes('kirada')) {
-        chatText.textContent = "Tên cấm! Bị cấm vĩnh viễn!";
-        localStorage.setItem(BANNED_KEY, 'true');
-        setTimeout(showPermanentBan, 1500);
-        authorInput.value = '';
-        return false;
-      }
-      return true;
     }
 
     // === CHẤM ĐIỂM THƠ ===
@@ -612,11 +711,9 @@
       }
     }
 
-// === LƯU BÀI ===
+    // === LƯU BÀI ===
     function savePost() {
       if (localStorage.getItem(BANNED_KEY) === 'true') return;
-
-      if (!checkAuthor()) return;
 
       const author = authorInput.value.trim() || 'Ẩn danh';
       const title = titleInput.value.trim();
@@ -639,11 +736,10 @@
       }
 
       if (analysis.isVNCHMention) {
-        const reason = 'Nhắc VNCH dù cố ý hay cố tình';
+        const reason = 'Nhắc VNCH dưới mọi hình thức';
         const until = Date.now() + 24 * 60 * 60 * 1000;
         localStorage.setItem(banKey, JSON.stringify({ until, reason, permanent: false }));
         startCountdown(until, reason);
-        statusDiv.innerHTML = '<div class="warning-banner">Nhắc VNCH → Cấm 24h.</div>';
         return;
       }
 
@@ -662,7 +758,6 @@
 
       currentPost = post;
 
-      authorInput.value = '';
       titleInput.value = '';
       contentInput.value = '';
       autoDelete.checked = false;
@@ -691,9 +786,8 @@
       navigator.clipboard.writeText(shareLink.textContent).then(() => {
         chatText.textContent = "Đã copy link!";
       });
-    }
+}
 
-    // === CHIA SẺ FB ===
     function shareToFB() {
       if (!currentPost || currentPost.mode !== 'public') return;
       const url = generateShareLink(currentPost.id);
@@ -787,7 +881,7 @@
     const kurayamiMessages = {
       default: ['đang nghe...', 'ở đây nè', 'kể đi nào', 'cảm xúc bạn quý giá'],
       love: ['tình yêu khó quá ha', 'ôm cái nè', 'đừng buồn, có Kurayami đây', 'sẽ vui cùng bạn'],
-      vnch: ['Nhắc VNCH → cấm 24h nha', 'Kurayami phải tuân thủ luật', 'Không bypass được đâu'],
+      vnch: ['Nhắc VNCH → cấm 24h', 'Kurayami tuân thủ pháp luật', 'Không bypass được đâu'],
       unbanned: ['Kurayami đã gỡ cấm!', 'Viết tiếp nhé', 'Hài lòng chưa nào?', 'Kurayami vui vì bạn quay lại']
     };
 
@@ -795,6 +889,7 @@
       const title = titleInput.value.toLowerCase();
       const content = contentInput.value.toLowerCase();
       const cleanText = removeDiacritics(`${title} ${content}`);
+
       if (localStorage.getItem('kurayami_unbanned') === 'true') {
         chatText.textContent = kurayamiMessages.unbanned[Math.floor(Math.random() * 4)];
         localStorage.removeItem('kurayami_unbanned');
@@ -841,7 +936,6 @@
               Chia sẻ lên Facebook
             </button>
           </div>
-        `;
       }
     }
 
@@ -864,7 +958,7 @@
       deleteDate.disabled = !autoDelete.checked;
     });
 
-    authorInput.addEventListener('input', () => { checkAuthor(); kurayamiSpeak(); });
+    authorInput.addEventListener('input', checkAuthor);
     titleInput.addEventListener('input', kurayamiSpeak);
     contentInput.addEventListener('input', kurayamiSpeak);
 
@@ -880,4 +974,3 @@
   </script>
 </body>
 </html>
-    

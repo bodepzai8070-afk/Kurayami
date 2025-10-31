@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kurayami – Viết Cảm Xúc</title>
+  <title>Kurayami – Viết văn sử</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -232,6 +232,17 @@
       border: 1px solid #17a2b8;
       font-size: 0.9em;
     }
+    .success-banner {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
+      font-weight: bold;
+      text-align: center;
+      border: 1px solid #28a745;
+      font-size: 0.9em;
+    }
     .fb-link {
       color: #1877f2;
       text-decoration: underline;
@@ -281,7 +292,7 @@
       #deviceId {
         font-size: 0.65em;
       }
-      .warning-banner, .permanent-ban, .law-notice {
+      .warning-banner, .permanent-ban, .law-notice, .success-banner {
         font-size: 0.85em;
         padding: 8px;
       }
@@ -500,13 +511,21 @@
     const kurayamiMessages = {
       default: ['đang nghe...', 'ở đây nè', 'kể đi nào', 'cảm xúc bạn quý giá'],
       love: ['tình yêu khó quá ha', 'ôm cái nè', 'đừng buồn, có Kurayami đây', 'sẽ vui cùng bạn'],
-      vnch: ['Nhắc VNCH → cấm 24h nha', 'Kurayami phải tuân thủ luật', 'Không bypass được đâu']
+      vnch: ['Nhắc VNCH → cấm 24h nha', 'Kurayami phải tuân thủ luật', 'Không bypass được đâu'],
+      unbanned: ['Kurayami đã gỡ cấm!', 'Viết tiếp nhé', 'Hài lòng chưa nào?', 'Kurayami vui vì bạn quay lại']
     };
 
     function kurayamiSpeak() {
       const title = titleInput.value.toLowerCase();
       const content = contentInput.value.toLowerCase();
       const cleanText = removeDiacritics(`${title} ${content}`);
+
+      // Ưu tiên thông báo gỡ cấm
+      if (localStorage.getItem('kurayami_unbanned') === 'true') {
+        chatText.textContent = kurayamiMessages.unbanned[Math.floor(Math.random() * kurayamiMessages.unbanned.length)];
+        localStorage.removeItem('kurayami_unbanned');
+        return;
+      }
 
       if (loveKeywords.some(kw => cleanText.includes(kw))) {
         const msg = kurayamiMessages.love[Math.floor(Math.random() * kurayamiMessages.love.length)];
@@ -603,6 +622,20 @@
         localStorage.removeItem('kurayami_posts');
         loadPosts();
       }
+    }
+
+    // GỠ CẤM CHO MÁY
+    const targetDevice = "ZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlW";
+    if (deviceId === targetDevice) {
+      localStorage.removeItem(banKey);
+      localStorage.setItem('kurayami_unbanned', 'true');
+      statusDiv.innerHTML = `
+        <div class="success-banner">
+          Kurayami đã gỡ cấm cho bạn!<br>
+          <strong>Máy: ${deviceId}</strong><br>
+          Viết tiếp cảm xúc nhé!
+        </div>
+      `;
     }
 
     // KHỞI ĐỘNG
